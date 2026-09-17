@@ -13,7 +13,8 @@ import {
   SiMysql,
   SiNextdotjs,
 } from "react-icons/si";
-import { FaJava, FaGithub, FaLinkedin, FaInstagram, FaLaravel } from "react-icons/fa";
+import { FaJava, FaGithub, FaLinkedin, FaInstagram, FaLaravel, FaGamepad } from "react-icons/fa";
+import Link from "next/link";
 
 export default function Home() {
   const experiences = [
@@ -170,6 +171,9 @@ export default function Home() {
             <button onClick={() => window.print()} className="bg-yellow-300 font-bold border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform print:hidden flex items-center gap-2">
               Export PDF
             </button>
+            <Link href="/games" className="bg-[#9bc400] font-bold border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform print:hidden flex items-center gap-2">
+              <FaGamepad className="w-5 h-5" /> Mini Game
+            </Link>
           </div>
           <p className="hidden print:block text-lg font-medium max-w-3xl bg-white border-4 border-black p-4 mt-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             As a versatile Front-End and Mobile Developer with a specialized focus on UI/UX Design, I am dedicated to crafting digital products that seamlessly blend technical logic with aesthetic appeal. I am driven by the belief that programming is a powerful tool for problem-solving, allowing me to transform creative ideas into functional, user-centric solutions. My expertise is grounded in my 6th-semester Informatics studies and my experience at Bangkit Academy, where I mastered Android development using Kotlin to build clean, responsive, and high-performing applications. Combining my passion for coding with a strong design sensibility, I am committed to delivering innovative digital experiences that prioritize and elevate the user journey.
