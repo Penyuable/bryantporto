@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import GeminiChat from "@/components/GeminiChat";
 
 const generateNotes = (startOctave: number, numNotes: number) => {
   const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -230,6 +231,9 @@ export default function PianoGame() {
             </div>
         </motion.div>
       </main>
+      <GeminiChat
+        pageContext="Ini adalah game Piano/Keyboard virtual di portofolio Bryant. Pengguna bisa menekan tuts piano di layar atau keyboard komputer untuk memainkan nada. Bantu pengguna dengan tips bermain atau info tentang nada/musik."
+      />
     </div>
   );
 }

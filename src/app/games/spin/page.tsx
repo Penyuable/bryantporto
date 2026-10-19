@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import GeminiChat from "@/components/GeminiChat";
 
 const PRIZES = [
   { text: "iPhone 15", color: "#f87171" },   // red-400
@@ -169,6 +170,9 @@ export default function SpinWheelPage() {
 
         </motion.div>
       </main>
+      <GeminiChat
+        pageContext="Ini adalah game Spin Wheel (putar roda) di portofolio Bryant. Pengguna menekan tombol SPIN untuk memutar roda berhadiah. Hadiahnya acak dan lucu-lucuan saja (tidak nyata). Bantu pengguna bersenang-senang."
+      />
     </div>
   );
 }

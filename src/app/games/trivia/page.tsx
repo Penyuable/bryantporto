@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import GeminiChat from "@/components/GeminiChat";
 
 const QUESTIONS = [
   {
@@ -185,6 +186,9 @@ export default function TriviaGamePage() {
           </AnimatePresence>
         </div>
       </main>
+      <GeminiChat
+        pageContext="Ini adalah game Trivia Quiz di portofolio Bryant. Pengguna menjawab pertanyaan pilihan ganda bertopik umum (sejarah, sains, dll). Bantu pengguna jika ingin hints atau penjelasan seputar pertanyaan trivia."
+      />
     </div>
   );
 }

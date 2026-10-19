@@ -12,33 +12,61 @@ import {
   SiPython,
   SiMysql,
   SiNextdotjs,
+  SiNestjs,
+  SiSupabase,
+  SiTailwindcss,
+  SiTypescript,
 } from "react-icons/si";
 import { FaJava, FaGithub, FaLinkedin, FaInstagram, FaLaravel, FaGamepad } from "react-icons/fa";
 import Link from "next/link";
+import GeminiChat from "@/components/GeminiChat";
 
 export default function Home() {
   const experiences = [
     {
+      company: "Kemenangan Masindo Group",
+      role: "IT Developer",
+      period: "Present",
+      desc: "Developing a web-based dashboard for real-time monitoring and task tracking across every company division.",
+      tools: ["Next.js", "Nest.js", "Supabase", "Tailwind CSS"],
+      color: "bg-emerald-300",
+    },
+    {
       company: "Bangkit Academy",
       role: "Mobile Developer",
+      desc: "Developed Android mobile applications using Kotlin, Jetpack Compose, and clean architecture.",
       tools: ["Kotlin", "Android", "Jetpack Compose"],
       color: "bg-blue-300",
     },
     {
       company: "PT Tiga Serangkai Inti Corpora",
       role: "Lead UI/UX Designer",
+      desc: "Led UI/UX design initiatives for digital library ecosystems (Perpuskita & Perpuskita Admin Panel).",
       tools: ["Figma"],
       color: "bg-pink-300",
     },
     {
       company: "Tiga Serangkai University",
       role: "Frontend Developer",
+      desc: "Built frontend academic portals and web management systems for the Faculty of Engineering.",
       tools: ["PHP", "Laravel", "Figma"],
       color: "bg-yellow-300",
     },
   ];
 
   const projects = [
+    {
+      title: "Division Monitoring Dashboard",
+      desc: "Web-based dashboard for monitoring and managing tasks across every company division.",
+      tags: [
+        { name: "Next.js", icon: <SiNextdotjs /> },
+        { name: "Nest.js", icon: <SiNestjs /> },
+        { name: "Supabase", icon: <SiSupabase /> },
+        { name: "Tailwind CSS", icon: <SiTailwindcss /> },
+      ],
+      color: "bg-cyan-300",
+      link: null,
+    },
     {
       title: "Sleepwell (Capstone)",
       desc: "Mobile app for detecting sleep quality based on questionnaires.",
@@ -108,12 +136,16 @@ export default function Home() {
     { name: "Java", icon: <FaJava className="w-8 h-8" /> },
     { name: "PHP", icon: <SiPhp className="w-8 h-8" /> },
     { name: "JavaScript", icon: <SiJavascript className="w-8 h-8" /> },
+    { name: "TypeScript", icon: <SiTypescript className="w-8 h-8" /> },
     { name: "React", icon: <SiReact className="w-8 h-8" /> },
-    { name: "Flutter", icon: <SiFlutter className="w-8 h-8" /> },
+    { name: "Next.js", icon: <SiNextdotjs className="w-8 h-8" /> },
+    { name: "Nest.js", icon: <SiNestjs className="w-8 h-8" /> },
+    { name: "Tailwind CSS", icon: <SiTailwindcss className="w-8 h-8" /> },
+    { name: "Supabase", icon: <SiSupabase className="w-8 h-8" /> },
     { name: "SQL", icon: <SiMysql className="w-8 h-8" /> },
+    { name: "Flutter", icon: <SiFlutter className="w-8 h-8" /> },
     { name: "Python", icon: <SiPython className="w-8 h-8" /> },
     { name: "Figma", icon: <SiFigma className="w-8 h-8" /> },
-    { name: "Next.js", icon: <SiNextdotjs className="w-8 h-8" /> },
   ];
 
   return (
@@ -176,7 +208,7 @@ export default function Home() {
             </Link>
           </div>
           <p className="hidden print:block text-lg font-medium max-w-3xl bg-white border-4 border-black p-4 mt-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            As a versatile Front-End and Mobile Developer with a specialized focus on UI/UX Design, I am dedicated to crafting digital products that seamlessly blend technical logic with aesthetic appeal. I am driven by the belief that programming is a powerful tool for problem-solving, allowing me to transform creative ideas into functional, user-centric solutions. My expertise is grounded in my 6th-semester Informatics studies and my experience at Bangkit Academy, where I mastered Android development using Kotlin to build clean, responsive, and high-performing applications. Combining my passion for coding with a strong design sensibility, I am committed to delivering innovative digital experiences that prioritize and elevate the user journey.
+            As a versatile IT Developer, Front-End and Mobile Developer with a specialized focus on UI/UX Design, I am dedicated to crafting digital products that seamlessly blend technical logic with aesthetic appeal. Currently serving as an IT Developer at Kemenangan Masindo Group developing enterprise web dashboards using Next.js, Nest.js, Supabase, and Tailwind CSS. Grounded in my Informatics background, Bangkit Academy alumni experience, and hands-on industry development, I am committed to delivering innovative, user-centric digital experiences.
           </p>
         </motion.section>
 
@@ -187,13 +219,27 @@ export default function Home() {
             {experiences.map((exp, idx) => (
               <div
                 key={idx}
-                className={`${exp.color} border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] break-inside-avoid`}
+                className={`${exp.color} border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] break-inside-avoid flex flex-col justify-between`}
               >
-                <h3 className="text-2xl font-bold mb-1">{exp.company}</h3>
-                <p className="text-xl font-semibold mb-4 bg-white border-2 border-black inline-block px-2 py-1">
-                  {exp.role}
-                </p>
-                <div className="flex flex-wrap gap-2">
+                <div>
+                  <div className="flex justify-between items-start gap-2 mb-2">
+                    <h3 className="text-2xl font-bold">{exp.company}</h3>
+                    {exp.period && (
+                      <span className="bg-white border-2 border-black px-2.5 py-0.5 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] shrink-0">
+                        {exp.period}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xl font-semibold mb-4 bg-white border-2 border-black inline-block px-2 py-1">
+                    {exp.role}
+                  </p>
+                  {exp.desc && (
+                    <p className="text-base font-medium mb-4 bg-white/80 p-3 border-2 border-black">
+                      {exp.desc}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2 mt-auto">
                   {exp.tools.map((tool, i) => (
                     <span
                       key={i}
@@ -272,6 +318,9 @@ export default function Home() {
           <p className="font-medium mt-2">@2026 bryxy</p>
         </div>
       </footer>
+      <GeminiChat
+        pageContext="Ini adalah halaman portofolio Bryant (Bryxy), seorang IT Developer & Fullstack/Mobile Developer dari Indonesia. Saat ini bekerja sebagai IT Developer di Kemenangan Masindo Group (sedang mengembangkan dashboard web monitoring pekerjaan antar divisi menggunakan Next.js, Nest.js, Supabase, dan Tailwind CSS). Juga berpengalaman di Kotlin, Android, React, Laravel, Figma. Bantu pengunjung mengenal Bryant lebih jauh."
+      />
     </div>
   );
 }

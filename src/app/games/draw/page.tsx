@@ -2,6 +2,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import GeminiChat from "@/components/GeminiChat";
 
 const COLORS = [
   "#000000", // Black
@@ -35,17 +36,11 @@ export default function DrawPage() {
   const [lineWidth, setLineWidth] = useState(5);
   type ToolType = "brush" | "spray" | "watercolor" | "pastel" | "fill";
   const [tool, setTool] = useState<ToolType>("brush");
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatQuery, setChatQuery] = useState("");
-  const [chatResponse, setChatResponse] = useState("");
-  const [isChatLoading, setIsChatLoading] = useState(false);
+
   const executeDrawings = (drawings: any[]) => {
     const ctx = contextRef.current;
     if (!ctx) return;
-    
-    // Save current context state
     ctx.save();
-    
     drawings.forEach(draw => {
       ctx.beginPath();
       if (draw.color) {
@@ -53,7 +48,6 @@ export default function DrawPage() {
         else ctx.strokeStyle = draw.color;
       }
       if (draw.lineWidth) ctx.lineWidth = draw.lineWidth;
-
       if (draw.type === "circle") {
         ctx.arc(draw.x, draw.y, draw.radius, 0, Math.PI * 2);
       } else if (draw.type === "rect") {
@@ -62,120 +56,25 @@ export default function DrawPage() {
         ctx.moveTo(draw.x1, draw.y1);
         ctx.lineTo(draw.x2, draw.y2);
       }
-
       if (draw.fill) ctx.fill();
       else ctx.stroke();
     });
-    
-    // Restore context to previous user settings
     ctx.restore();
   };
 
-  const handleAskGemini = async () => {
-    if (!chatQuery.trim()) return;
-    setIsChatLoading(true);
-    // Move current query to response so user knows what they asked
-    const currentQuery = chatQuery;
-    setChatResponse("");
-    try {
-      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
-      
-      const parts: any[] = [{ text: currentQuery }];
-      
-      // Ambil gambar dari kanvas
-      if (canvasRef.current) {
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = canvasRef.current.width;
-        tempCanvas.height = canvasRef.current.height;
-        const ctx = tempCanvas.getContext('2d');
-        if (ctx) {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-          ctx.drawImage(canvasRef.current, 0, 0);
-          
-          const dataUrl = tempCanvas.toDataURL("image/jpeg", 0.8);
-          const base64Data = dataUrl.split(',')[1];
-          if (base64Data) {
-            parts.push({
-              inlineData: {
-                data: base64Data,
-                mimeType: "image/jpeg"
-              }
-            });
-          }
-        }
-      }
-
-      let model = "gemini-3.6-flash";      
-      const systemInstruction = {
-        parts: [{ 
-          text: `Kamu adalah asisten menggambar pintar. Pengguna bisa memintamu menggambar di atas kanvas mereka. Jika mereka meminta kamu menggambar sesuatu (misalnya, gambarkan kotak, lingkaran merah, dll), kamu harus membalas HANYA dengan JSON murni dalam format berikut, tanpa markdown blok backtick:
-{
-  "message": "Pesan yang kamu sampaikan ke pengguna (misal: Ini gambar kotak merah)",
-  "drawings": [
-    { "type": "circle", "x": 400, "y": 300, "radius": 50, "color": "#ff0000", "fill": true },
-    { "type": "rect", "x": 200, "y": 200, "width": 100, "height": 100, "color": "#00ff00", "fill": false },
-    { "type": "line", "x1": 0, "y1": 0, "x2": 100, "y2": 100, "color": "#0000ff", "lineWidth": 5 }
-  ]
-}
-Lebar kanvas terlihat sekitar 800px dan tinggi 600px. Gunakan format kordinat x dan y (dikalikan 2 karena display).
-Jika pengguna HANYA BERTANYA dan tidak menyuruh menggambar, tetap jawab dalam format JSON tersebut dengan "drawings" berupa array kosong [].`
-        }]
-      };
-      
-      let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          systemInstruction: systemInstruction,
-          contents: [{ parts: parts }]
-        })
-      });
-      
-      let data = await res.json();
-      
-      // If high demand or interactions API restriction, fallback
-      if (data.error && data.error.message && (data.error.message.includes("high demand") || data.error.message.includes("Interactions API"))) {
-         model = "gemini-3.5-flash";
-         res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              systemInstruction: systemInstruction,
-              contents: [{ parts: parts }]
-            })
-          });
-         data = await res.json();
-      }
-
-      if (data.candidates && data.candidates.length > 0) {
-        let textResult = data.candidates[0].content.parts[0].text;
-        textResult = textResult.replace(/```json/g, '').replace(/```/g, '').trim();
-        try {
-          const parsed = JSON.parse(textResult);
-          setChatResponse(parsed.message || "Selesai!");
-          if (parsed.drawings && Array.isArray(parsed.drawings) && parsed.drawings.length > 0) {
-            executeDrawings(parsed.drawings);
-          }
-        } catch (e) {
-          setChatResponse(textResult);
-        }
-      } else if (data.error) {
-        setChatResponse(`Error: ${data.error.message || "Failed to get response"}`);
-      } else {
-        setChatResponse("Maaf, terjadi kesalahan atau tidak ada jawaban.");
-      }
-    } catch (e) {
-      setChatResponse("Error connecting to Gemini AI.");
-    } finally {
-      setIsChatLoading(false);
-      setChatQuery("");
-    }
+  const getCanvasImage = (): string | null => {
+    if (!canvasRef.current) return null;
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvasRef.current.width;
+    tempCanvas.height = canvasRef.current.height;
+    const ctx = tempCanvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    ctx.drawImage(canvasRef.current, 0, 0);
+    return tempCanvas.toDataURL("image/jpeg", 0.8);
   };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -565,74 +464,11 @@ Jika pengguna HANYA BERTANYA dan tidak menyuruh menggambar, tetap jawab dalam fo
         </motion.div>
       </main>
 
-      {/* Floating Chat UI */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-        {isChatOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="bg-white border-4 border-black p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] w-80 sm:w-96 mb-4 flex flex-col gap-3"
-          >
-            <div className="flex justify-between items-center border-b-2 border-black pb-2">
-              <h3 className="font-black uppercase tracking-tight text-lg bg-yellow-300 px-2 py-1 border-2 border-black -rotate-2">Tanya Gemini</h3>
-              <button 
-                onClick={() => setIsChatOpen(false)} 
-                className="font-black text-xl hover:text-red-500 hover:scale-110 transition-transform"
-              >
-                X
-              </button>
-            </div>
-            
-            <div className="h-64 overflow-y-auto border-2 border-black p-3 bg-blue-50 text-sm flex flex-col gap-3">
-              <div className="bg-white border-2 border-black p-2 self-start rounded-tr-xl rounded-br-xl rounded-bl-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
-                Halo! Aku agen AI Gemini-mu. Ada yang ingin kamu tanyakan?
-              </div>
-              
-              {chatResponse && (
-                <div className="bg-yellow-200 border-2 border-black p-2 self-start rounded-tr-xl rounded-br-xl rounded-bl-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] whitespace-pre-wrap">
-                  {chatResponse}
-                </div>
-              )}
-              
-              {isChatLoading && (
-                <div className="bg-gray-200 border-2 border-black p-2 self-start rounded-tr-xl rounded-br-xl rounded-bl-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] animate-pulse">
-                  Berpikir...
-                </div>
-              )}
-            </div>
-            
-            <div className="flex gap-2">
-              <input 
-                type="text" 
-                value={chatQuery}
-                onChange={(e) => setChatQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAskGemini()}
-                placeholder="Ketik pertanyaanmu..."
-                className="flex-grow border-2 border-black p-2 text-sm focus:outline-none focus:bg-yellow-100 font-medium"
-              />
-              <button 
-                onClick={handleAskGemini}
-                disabled={isChatLoading || !chatQuery.trim()}
-                className="bg-green-400 font-black uppercase border-2 border-black px-4 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform"
-              >
-                Kirim
-              </button>
-            </div>
-          </motion.div>
-        )}
-        
-        {!isChatOpen && (
-          <button 
-            onClick={() => setIsChatOpen(true)}
-            className="bg-purple-400 font-black uppercase border-4 border-black w-16 h-16 rounded-full shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-2 transition-transform hover:rotate-12 flex items-center justify-center group relative"
-          >
-            <span className="text-3xl group-hover:animate-bounce">🤖</span>
-            <span className="absolute -top-2 -right-2 bg-yellow-300 border-2 border-black text-xs px-2 py-0.5 font-bold rounded-full animate-pulse">
-              AI
-            </span>
-          </button>
-        )}
-      </div>
+      <GeminiChat
+        getCanvasImage={getCanvasImage}
+        onDrawingCommands={executeDrawings}
+        pageContext="Ini adalah halaman Drawing Canvas di portofolio Bryant. Pengguna bisa menggambar bebas dengan berbagai alat (brush, spray, watercolor, pastel, fill). Kamu bisa melihat gambar di kanvas dan menggambar di atasnya."
+      />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { constants } from "buffer";
+import GeminiChat from "@/components/GeminiChat";
 
 const GAME_WIDTH = 400;
 const GAME_HEIGHT = 500;
@@ -242,6 +242,9 @@ export default function FlappyBirdPage() {
           </div>
         </motion.div>
       </main>
+      <GeminiChat
+        pageContext="Ini adalah game Flappy Bird versi web portofolio Bryant. Pengguna mengklik atau menekan spasi untuk membuat burung melompat menghindari pipa. Bantu pengguna dengan tips bermain atau jawab pertanyaan umum."
+      />
     </div>
   );
 }

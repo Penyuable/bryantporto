@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import GeminiChat from "@/components/GeminiChat";
 
 const GRID_SIZE = 20;
 const INITIAL_SNAKE = [
@@ -20,7 +21,7 @@ export default function GamesPage() {
   const directionRef = useRef(direction);
 
   const generateFood = useCallback(() => {
-    let newFood;
+    let newFood: { x: number; y: number };
     while (true) {
       newFood = {
         x: Math.floor(Math.random() * GRID_SIZE),
@@ -259,6 +260,9 @@ export default function GamesPage() {
           </div>
         </motion.div>
       </main>
+      <GeminiChat
+        pageContext="Ini adalah game Snake klasik di portofolio Bryant. Pengguna mengontrol ular menggunakan tombol panah untuk memakan apel dan menghindari dinding. Bantu pengguna dengan tips bermain atau jawab pertanyaan umum."
+      />
     </div>
   );
 }
