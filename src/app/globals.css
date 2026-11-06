@@ -1,8 +1,119 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #fdfdfd;
-  --foreground: #000000;
+  --background: #eef1fb;
+  --foreground: #334155;
+  /* RGB triplet used to tint the clay drop shadows */
+  --clay-shadow: 88 80 160;
+  /* Inner highlight colour + strength multipliers for clay surfaces */
+  --clay-hl: 255 255 255;
+  --clay-hl-a: 1;
+  --clay-dk-a: 1;
+  --surface: #ffffff;
+}
+
+/* ---------- Dark mode ----------
+   Instead of sprinkling dark: variants everywhere, the pastel palette is
+   remapped: light tints (100-300) become deep muted tones and dark text
+   shades (700-950) become light, so every page follows automatically.
+   Screen-only so Export PDF always prints the light version. */
+@media screen {
+.dark {
+  color-scheme: dark;
+  --background: #171a2c;
+  --foreground: #e2e8f0;
+  --surface: #262a43;
+  --clay-shadow: 0 0 0;
+  --clay-hl: 190 200 255;
+  --clay-hl-a: 0.14;
+  --clay-dk-a: 3.5;
+  --color-violet-100: oklch(0.29 0.04 293);
+  --color-violet-200: oklch(0.33 0.06 293);
+  --color-violet-300: oklch(0.39 0.08 293);
+  --color-violet-700: oklch(0.84 0.09 293);
+  --color-violet-800: oklch(0.88 0.08 293);
+  --color-violet-900: oklch(0.92 0.06 293);
+  --color-violet-950: oklch(0.95 0.04 293);
+  --color-pink-100: oklch(0.29 0.04 354);
+  --color-pink-200: oklch(0.33 0.06 354);
+  --color-pink-300: oklch(0.39 0.08 354);
+  --color-pink-700: oklch(0.84 0.09 354);
+  --color-pink-800: oklch(0.88 0.08 354);
+  --color-pink-900: oklch(0.92 0.06 354);
+  --color-pink-950: oklch(0.95 0.04 354);
+  --color-sky-100: oklch(0.29 0.04 237);
+  --color-sky-200: oklch(0.33 0.06 237);
+  --color-sky-300: oklch(0.39 0.08 237);
+  --color-sky-700: oklch(0.84 0.09 237);
+  --color-sky-800: oklch(0.88 0.08 237);
+  --color-sky-900: oklch(0.92 0.06 237);
+  --color-sky-950: oklch(0.95 0.04 237);
+  --color-amber-100: oklch(0.29 0.04 75);
+  --color-amber-200: oklch(0.33 0.06 75);
+  --color-amber-300: oklch(0.39 0.08 75);
+  --color-amber-700: oklch(0.84 0.09 75);
+  --color-amber-800: oklch(0.88 0.08 75);
+  --color-amber-900: oklch(0.92 0.06 75);
+  --color-amber-950: oklch(0.95 0.04 75);
+  --color-emerald-100: oklch(0.29 0.04 163);
+  --color-emerald-200: oklch(0.33 0.06 163);
+  --color-emerald-300: oklch(0.39 0.08 163);
+  --color-emerald-700: oklch(0.84 0.09 163);
+  --color-emerald-800: oklch(0.88 0.08 163);
+  --color-emerald-900: oklch(0.92 0.06 163);
+  --color-emerald-950: oklch(0.95 0.04 163);
+  --color-lime-100: oklch(0.29 0.04 130);
+  --color-lime-200: oklch(0.33 0.06 130);
+  --color-lime-300: oklch(0.39 0.08 130);
+  --color-lime-700: oklch(0.84 0.09 130);
+  --color-lime-800: oklch(0.88 0.08 130);
+  --color-lime-900: oklch(0.92 0.06 130);
+  --color-lime-950: oklch(0.95 0.04 130);
+  --color-cyan-100: oklch(0.29 0.04 215);
+  --color-cyan-200: oklch(0.33 0.06 215);
+  --color-cyan-300: oklch(0.39 0.08 215);
+  --color-cyan-700: oklch(0.84 0.09 215);
+  --color-cyan-800: oklch(0.88 0.08 215);
+  --color-cyan-900: oklch(0.92 0.06 215);
+  --color-cyan-950: oklch(0.95 0.04 215);
+  --color-orange-100: oklch(0.29 0.04 50);
+  --color-orange-200: oklch(0.33 0.06 50);
+  --color-orange-300: oklch(0.39 0.08 50);
+  --color-orange-700: oklch(0.84 0.09 50);
+  --color-orange-800: oklch(0.88 0.08 50);
+  --color-orange-900: oklch(0.92 0.06 50);
+  --color-orange-950: oklch(0.95 0.04 50);
+  --color-teal-100: oklch(0.29 0.04 182);
+  --color-teal-200: oklch(0.33 0.06 182);
+  --color-teal-300: oklch(0.39 0.08 182);
+  --color-teal-700: oklch(0.84 0.09 182);
+  --color-teal-800: oklch(0.88 0.08 182);
+  --color-teal-900: oklch(0.92 0.06 182);
+  --color-teal-950: oklch(0.95 0.04 182);
+  --color-indigo-100: oklch(0.29 0.04 277);
+  --color-indigo-200: oklch(0.33 0.06 277);
+  --color-indigo-300: oklch(0.39 0.08 277);
+  --color-indigo-700: oklch(0.84 0.09 277);
+  --color-indigo-800: oklch(0.88 0.08 277);
+  --color-indigo-900: oklch(0.92 0.06 277);
+  --color-indigo-950: oklch(0.95 0.04 277);
+  --color-rose-100: oklch(0.29 0.04 12);
+  --color-rose-200: oklch(0.33 0.06 12);
+  --color-rose-300: oklch(0.39 0.08 12);
+  --color-rose-700: oklch(0.84 0.09 12);
+  --color-rose-800: oklch(0.88 0.08 12);
+  --color-rose-900: oklch(0.92 0.06 12);
+  --color-rose-950: oklch(0.95 0.04 12);
+  --color-slate-50: oklch(0.24 0.03 275);
+  --color-slate-100: oklch(0.27 0.03 275);
+  --color-slate-200: oklch(0.32 0.03 275);
+  --color-slate-500: oklch(0.72 0.03 275);
+  --color-slate-600: oklch(0.80 0.03 275);
+  --color-slate-700: oklch(0.88 0.02 275);
+  --color-slate-800: oklch(0.94 0.015 275);
+}
 }
 
 html {
@@ -19,12 +130,119 @@ html {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-surface: var(--surface);
+  --font-sans: var(--font-nunito);
   --font-mono: var(--font-geist-mono);
+}
+
+@theme {
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-blob: blob 16s ease-in-out infinite;
+  --animate-wiggle: wiggle 2.8s ease-in-out infinite;
+  --animate-squish: squish 2.4s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+
+  @keyframes blob {
+    0%, 100% {
+      border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      border-radius: 70% 30% 46% 54% / 30% 39% 61% 70%;
+      transform: translate(30px, -40px) scale(1.08);
+    }
+    66% {
+      border-radius: 35% 65% 60% 40% / 60% 40% 60% 40%;
+      transform: translate(-25px, 25px) scale(0.94);
+    }
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(4deg); }
+  }
+
+  @keyframes squish {
+    0%, 100% { transform: scale(1, 1); }
+    45% { transform: scale(1.06, 0.94); }
+    60% { transform: scale(0.96, 1.04); }
+  }
+}
+
+/* ---------- Claymorphism primitives ---------- */
+
+@utility clay {
+  border-radius: 2rem;
+  box-shadow:
+    0 22px 40px -16px rgb(var(--clay-shadow) / 0.38),
+    inset -10px -10px 22px rgb(0 0 0 / calc(0.07 * var(--clay-dk-a))),
+    inset 10px 10px 22px rgb(var(--clay-hl) / calc(0.85 * var(--clay-hl-a)));
+}
+
+@utility clay-sm {
+  border-radius: 1.25rem;
+  box-shadow:
+    0 10px 20px -8px rgb(var(--clay-shadow) / 0.35),
+    inset -5px -5px 10px rgb(0 0 0 / calc(0.07 * var(--clay-dk-a))),
+    inset 5px 5px 10px rgb(var(--clay-hl) / calc(0.85 * var(--clay-hl-a)));
+}
+
+@utility clay-inset {
+  border-radius: 1.25rem;
+  box-shadow:
+    inset 6px 6px 12px rgb(var(--clay-shadow) / 0.22),
+    inset -6px -6px 12px rgb(var(--clay-hl) / calc(0.85 * var(--clay-hl-a)));
+}
+
+@utility clay-btn {
+  border-radius: 1.25rem;
+  box-shadow:
+    0 10px 20px -8px rgb(var(--clay-shadow) / 0.4),
+    inset -5px -5px 10px rgb(0 0 0 / calc(0.08 * var(--clay-dk-a))),
+    inset 5px 5px 10px rgb(var(--clay-hl) / calc(0.8 * var(--clay-hl-a)));
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease,
+    background-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow:
+      0 16px 28px -10px rgb(var(--clay-shadow) / 0.45),
+      inset -5px -5px 10px rgb(0 0 0 / calc(0.08 * var(--clay-dk-a))),
+      inset 5px 5px 10px rgb(var(--clay-hl) / calc(0.8 * var(--clay-hl-a)));
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px) scale(0.96);
+    box-shadow:
+      0 4px 8px -4px rgb(var(--clay-shadow) / 0.35),
+      inset 5px 5px 10px rgb(0 0 0 / calc(0.1 * var(--clay-dk-a))),
+      inset -5px -5px 10px rgb(var(--clay-hl) / calc(0.6 * var(--clay-hl-a)));
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
 }
 
 body {
   background: var(--background);
+  transition: background-color 0.4s ease, color 0.4s ease;
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: #ddd6fe;
+}
+
+.dark ::selection {
+  background: #5b4b9a;
 }

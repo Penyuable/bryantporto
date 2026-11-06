@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import GeminiChat from "@/components/GeminiChat";
+import ClayNav from "@/components/ClayNav";
+import ClayBlobs from "@/components/ClayBlobs";
 
 const GAME_WIDTH = 400;
 const GAME_HEIGHT = 500;
@@ -126,118 +128,139 @@ export default function FlappyBirdPage() {
   };
 
   return (
-    <div className="min-h-screen font-sans selection:bg-yellow-300 bg-gray-50 flex flex-col">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black tracking-tighter uppercase hover:underline underline-offset-4 decoration-4">
-            SB.
-          </Link>
-          <div className="flex gap-6 font-bold text-lg">
-            <Link href="/games" className="hover:underline underline-offset-4 decoration-4">Back to Games</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-sans text-slate-700 flex flex-col relative">
+      <ClayBlobs colors={["bg-sky-300", "bg-cyan-300", "bg-amber-300"]} />
+      <ClayNav links={[{ href: "/games", label: "Back to Games" }]} />
 
       <main className="flex-grow flex items-center justify-center p-6">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }} 
-          animate={{ opacity: 1, scale: 1 }} 
-          className="bg-white border-4 border-black p-4 md:p-8 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center w-full max-w-xl"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 160, damping: 18 }}
+          className="clay bg-surface/80 backdrop-blur-sm p-5 md:p-8 flex flex-col items-center w-full max-w-xl"
         >
-          <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-6 bg-blue-300 px-4 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-            Flappy Bird
+          <h1 className="clay bg-sky-200 text-3xl md:text-5xl font-black tracking-tight text-sky-900 mb-6 px-6 py-3 -rotate-2 animate-squish">
+            Flappy Bird 🐦
           </h1>
-          
-          <div className="w-full flex justify-between items-center mb-6 px-2">
-            <div className="text-xl md:text-2xl font-bold bg-pink-300 border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+
+          <div className="w-full flex justify-between items-center gap-3 mb-6 px-2">
+            <motion.div
+              key={score}
+              initial={{ scale: 1.25 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 12 }}
+              className="clay-sm bg-pink-200 text-pink-900 text-xl md:text-2xl font-black px-5 py-2"
+            >
               Score: {score}
-            </div>
-            <div className="text-xs md:text-sm font-bold bg-yellow-300 border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center">
+            </motion.div>
+            <div className="clay-sm bg-amber-200 text-amber-900 text-xs md:text-sm font-bold px-4 py-2 text-center">
               Space / Tap to Jump
             </div>
           </div>
 
           {/* Game Canvas */}
-          <div 
+          <div
             onClick={jump}
-            className="border-4 border-black bg-cyan-200 relative overflow-hidden cursor-pointer shadow-[inset_0px_4px_10px_rgba(0,0,0,0.2)]"
+            className="clay-inset rounded-[1.75rem]! bg-sky-200 relative overflow-hidden cursor-pointer"
             style={{
               width: "100%",
               maxWidth: `${GAME_WIDTH}px`,
               height: `${GAME_HEIGHT}px`,
             }}
           >
+            {/* Drifting clouds */}
+            <div className="absolute top-12 left-8 w-20 h-8 bg-surface/80 rounded-full clay-sm animate-float-slow" />
+            <div className="absolute top-32 right-10 w-28 h-10 bg-surface/70 rounded-full clay-sm animate-float" style={{ animationDelay: "-2s" }} />
+
             {/* Bird */}
-            <div 
-              className="absolute bg-yellow-400 border-2 border-black rounded-full shadow-[2px_2px_0px_rgba(0,0,0,1)] z-20"
+            <div
+              className="absolute bg-amber-300 rounded-full z-20"
               style={{
                 width: BIRD_SIZE,
                 height: BIRD_SIZE,
                 top: birdPos,
                 left: 50,
                 transform: `rotate(${Math.min(birdVelocity * 4, 90)}deg)`,
-                transition: 'transform 0.1s ease-out'
+                transition: 'transform 0.1s ease-out',
+                boxShadow:
+                  "inset -3px -3px 5px rgba(0,0,0,0.18), inset 3px 3px 5px rgba(255,255,255,0.7), 0 4px 8px rgba(146,64,14,0.3)",
               }}
             >
               {/* Eye */}
-              <div className="absolute bg-white border border-black rounded-full w-3 h-3 right-2 top-1">
-                 <div className="absolute bg-black rounded-full w-1 h-1 right-0.5 top-1" />
+              <div className="absolute bg-white rounded-full w-3 h-3 right-2 top-1 shadow-sm">
+                 <div className="absolute bg-[#1e293b] rounded-full w-1.5 h-1.5 right-0.5 top-0.5" />
               </div>
               {/* Beak */}
-              <div className="absolute bg-orange-500 border border-black rounded w-4 h-2 -right-2 top-4" />
+              <div className="absolute bg-orange-400 rounded-full w-4 h-2 -right-2 top-4 shadow-[inset_-1px_-1px_2px_rgba(0,0,0,0.2)]" />
             </div>
 
             {/* Pipes */}
             {pipes.map((pipe, i) => (
               <React.Fragment key={i}>
                 {/* Top Pipe */}
-                <div 
-                  className="absolute bg-green-500 border-x-4 border-b-4 border-black z-10"
+                <div
+                  className="absolute bg-emerald-400 z-10 rounded-b-xl"
                   style={{
                     left: pipe.x,
                     top: 0,
                     width: PIPE_WIDTH,
                     height: pipe.topHeight,
+                    boxShadow: "inset -6px 0 10px rgba(0,0,0,0.15), inset 6px 0 10px rgba(255,255,255,0.45)",
                   }}
                 >
-                  <div className="absolute bottom-0 w-[120%] -left-[10%] h-6 bg-green-400 border-4 border-black shadow-[0_4px_0_rgba(0,0,0,0.2)]" />
+                  <div
+                    className="absolute bottom-0 w-[120%] -left-[10%] h-6 bg-emerald-300 rounded-xl"
+                    style={{ boxShadow: "inset -4px -4px 8px rgba(0,0,0,0.15), inset 4px 4px 8px rgba(255,255,255,0.6), 0 4px 6px rgba(6,78,59,0.25)" }}
+                  />
                 </div>
                 {/* Bottom Pipe */}
-                <div 
-                  className="absolute bg-green-500 border-x-4 border-t-4 border-black z-10"
+                <div
+                  className="absolute bg-emerald-400 z-10 rounded-t-xl"
                   style={{
                     left: pipe.x,
                     top: pipe.topHeight + PIPE_GAP,
                     width: PIPE_WIDTH,
                     height: GAME_HEIGHT - (pipe.topHeight + PIPE_GAP),
+                    boxShadow: "inset -6px 0 10px rgba(0,0,0,0.15), inset 6px 0 10px rgba(255,255,255,0.45)",
                   }}
                 >
-                   <div className="absolute top-0 w-[120%] -left-[10%] h-6 bg-green-400 border-4 border-black shadow-[0_4px_0_rgba(0,0,0,0.2)]" />
+                   <div
+                     className="absolute top-0 w-[120%] -left-[10%] h-6 bg-emerald-300 rounded-xl"
+                     style={{ boxShadow: "inset -4px -4px 8px rgba(0,0,0,0.15), inset 4px 4px 8px rgba(255,255,255,0.6), 0 -4px 6px rgba(6,78,59,0.2)" }}
+                   />
                 </div>
               </React.Fragment>
             ))}
 
             {!gameStarted && !isGameOver && (
-              <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-30 backdrop-blur-sm">
-                <h2 className="text-3xl font-black text-white uppercase drop-shadow-[4px_4px_0px_rgba(0,0,0,1)] animate-pulse text-center">
+              <div className="absolute inset-0 bg-slate-900/10 flex items-center justify-center z-30 backdrop-blur-[2px]">
+                <h2 className="clay bg-surface/90 text-2xl font-black text-sky-800 px-6 py-4 text-center animate-float">
                   Tap or Space<br/>to Start
                 </h2>
               </div>
             )}
 
             {isGameOver && (
-              <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-30 backdrop-blur-sm">
-                <h2 className="text-4xl font-black text-white uppercase mb-4 drop-shadow-[4px_4px_0px_rgba(0,0,0,1)] text-red-500">
-                  Game Over!
-                </h2>
-                <button 
-                  onClick={(e) => { e.stopPropagation(); resetGame(); }}
-                  className="bg-yellow-300 font-bold text-xl border-4 border-black px-6 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="absolute inset-0 bg-slate-900/30 flex flex-col items-center justify-center z-30 backdrop-blur-sm"
+              >
+                <motion.div
+                  initial={{ scale: 0.5, y: 30 }}
+                  animate={{ scale: 1, y: 0 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 15 }}
+                  className="clay bg-surface px-8 py-6 flex flex-col items-center"
                 >
-                  Play Again
-                </button>
-              </div>
+                  <h2 className="text-3xl font-black text-rose-500 mb-4">Game Over!</h2>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); resetGame(); }}
+                    className="clay-btn bg-amber-200 text-amber-900 font-extrabold text-xl px-6 py-3"
+                  >
+                    Play Again
+                  </button>
+                </motion.div>
+              </motion.div>
             )}
           </div>
         </motion.div>

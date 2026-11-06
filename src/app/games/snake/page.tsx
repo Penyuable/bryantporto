@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import GeminiChat from "@/components/GeminiChat";
+import ClayNav from "@/components/ClayNav";
+import ClayBlobs from "@/components/ClayBlobs";
 
 const GRID_SIZE = 20;
 const INITIAL_SNAKE = [
@@ -141,40 +143,38 @@ export default function GamesPage() {
   }, [direction, food, isGameOver, isPaused, generateFood]);
 
   return (
-    <div className="min-h-screen font-sans selection:bg-yellow-300 bg-gray-50 flex flex-col">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black tracking-tighter uppercase hover:underline underline-offset-4 decoration-4">
-            SB.
-          </Link>
-          <div className="flex gap-6 font-bold text-lg">
-            <Link href="/games" className="hover:underline underline-offset-4 decoration-4">Back to Games</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-sans text-slate-700 flex flex-col relative">
+      <ClayBlobs colors={["bg-lime-300", "bg-emerald-300", "bg-amber-300"]} />
+      <ClayNav links={[{ href: "/games", label: "Back to Games" }]} />
 
       <main className="flex-grow flex items-center justify-center p-6">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }} 
-          animate={{ opacity: 1, scale: 1 }} 
-          className="bg-white border-4 border-black p-4 md:p-8 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center w-full max-w-xl"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 160, damping: 18 }}
+          className="clay bg-surface/80 backdrop-blur-sm p-5 md:p-8 flex flex-col items-center w-full max-w-xl"
         >
-          <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-6 bg-yellow-300 px-4 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-            Snake Game
+          <h1 className="clay bg-lime-200 text-3xl md:text-5xl font-black tracking-tight text-lime-900 mb-6 px-6 py-3 -rotate-2 animate-squish">
+            Snake Game 🐍
           </h1>
-          
-          <div className="w-full flex justify-between items-center mb-6 px-2">
-            <div className="text-xl md:text-2xl font-bold bg-pink-300 border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+
+          <div className="w-full flex justify-between items-center gap-3 mb-6 px-2">
+            <motion.div
+              key={score}
+              initial={{ scale: 1.25 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 12 }}
+              className="clay-sm bg-pink-200 text-pink-900 text-xl md:text-2xl font-black px-5 py-2"
+            >
               Score: {score}
-            </div>
-            <div className="text-xs md:text-sm font-bold bg-blue-300 border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center">
+            </motion.div>
+            <div className="clay-sm bg-sky-200 text-sky-900 text-xs md:text-sm font-bold px-4 py-2 text-center">
               Space to Pause <br className="md:hidden" /> / WASD
             </div>
           </div>
 
-          <div 
-            className="border-4 border-black bg-[#9bc400] grid relative overflow-hidden"
+          <div
+            className="clay-inset bg-lime-200 grid relative overflow-hidden rounded-[1.75rem]! p-1"
             style={{
               width: "100%",
               maxWidth: "400px",
@@ -187,73 +187,87 @@ export default function GamesPage() {
             {snake.map((segment, index) => (
               <div
                 key={index}
-                className={`border border-black/20 ${index === 0 ? "bg-black" : "bg-black/80"}`}
+                className={index === 0 ? "bg-emerald-600 z-[1]" : "bg-emerald-500"}
                 style={{
                   gridColumnStart: segment.x + 1,
                   gridRowStart: segment.y + 1,
-                  borderRadius: index === 0 ? '4px' : '2px'
+                  borderRadius: index === 0 ? "40%" : "30%",
+                  transform: index === 0 ? "scale(1.1)" : "scale(0.92)",
+                  boxShadow:
+                    "inset -2px -2px 3px rgba(0,0,0,0.25), inset 2px 2px 3px rgba(255,255,255,0.45), 0 2px 3px rgba(6,78,59,0.3)",
                 }}
               />
             ))}
-            
+
             {/* Render Food */}
             <div
-              className="bg-red-500 border-2 border-black animate-pulse rounded-full"
+              className="bg-rose-500 rounded-full animate-pulse"
               style={{
                 gridColumnStart: food.x + 1,
                 gridRowStart: food.y + 1,
-                transform: 'scale(0.8)',
+                transform: "scale(0.85)",
+                boxShadow:
+                  "inset -2px -2px 3px rgba(0,0,0,0.25), inset 2px 2px 3px rgba(255,255,255,0.6), 0 2px 4px rgba(159,18,57,0.35)",
               }}
             />
 
             {isGameOver && (
-              <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-10 backdrop-blur-sm">
-                <h2 className="text-4xl font-black text-white uppercase mb-4 drop-shadow-[4px_4px_0px_rgba(0,0,0,1)] text-red-500">
-                  Game Over!
-                </h2>
-                <button 
-                  onClick={resetGame}
-                  className="bg-yellow-300 font-bold text-xl border-4 border-black px-6 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="absolute inset-0 bg-slate-900/30 flex flex-col items-center justify-center z-10 backdrop-blur-sm"
+              >
+                <motion.div
+                  initial={{ scale: 0.5, y: 30 }}
+                  animate={{ scale: 1, y: 0 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 15 }}
+                  className="clay bg-surface px-8 py-6 flex flex-col items-center"
                 >
-                  Play Again
-                </button>
-              </div>
+                  <h2 className="text-3xl font-black text-rose-500 mb-4">Game Over!</h2>
+                  <button
+                    onClick={resetGame}
+                    className="clay-btn bg-amber-200 text-amber-900 font-extrabold text-xl px-6 py-3"
+                  >
+                    Play Again
+                  </button>
+                </motion.div>
+              </motion.div>
             )}
 
             {isPaused && !isGameOver && (
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10 backdrop-blur-sm">
-                <h2 className="text-3xl font-black text-white uppercase drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-                  Paused
+              <div className="absolute inset-0 bg-slate-900/20 flex items-center justify-center z-10 backdrop-blur-sm">
+                <h2 className="clay bg-surface text-3xl font-black text-slate-700 px-8 py-4 animate-squish">
+                  Paused ⏸
                 </h2>
               </div>
             )}
           </div>
 
           {/* Mobile Controls */}
-          <div className="mt-8 grid grid-cols-3 gap-2 w-full max-w-[200px] md:hidden">
+          <div className="mt-8 grid grid-cols-3 gap-3 w-full max-w-[220px] md:hidden">
             <div />
-            <button 
+            <button
               onClick={() => { if (directionRef.current.y !== 1) { setDirection({ x: 0, y: -1 }); directionRef.current = { x: 0, y: -1 }; } }}
-              className="bg-white border-4 border-black p-4 active:bg-gray-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-bold text-xl transition-all"
+              className="clay-btn bg-surface p-4 flex items-center justify-center font-black text-xl"
             >
               ↑
             </button>
             <div />
-            <button 
+            <button
               onClick={() => { if (directionRef.current.x !== 1) { setDirection({ x: -1, y: 0 }); directionRef.current = { x: -1, y: 0 }; } }}
-              className="bg-white border-4 border-black p-4 active:bg-gray-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-bold text-xl transition-all"
+              className="clay-btn bg-surface p-4 flex items-center justify-center font-black text-xl"
             >
               ←
             </button>
-            <button 
+            <button
               onClick={() => { if (directionRef.current.y !== -1) { setDirection({ x: 0, y: 1 }); directionRef.current = { x: 0, y: 1 }; } }}
-              className="bg-white border-4 border-black p-4 active:bg-gray-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-bold text-xl transition-all"
+              className="clay-btn bg-surface p-4 flex items-center justify-center font-black text-xl"
             >
               ↓
             </button>
-            <button 
+            <button
               onClick={() => { if (directionRef.current.x !== -1) { setDirection({ x: 1, y: 0 }); directionRef.current = { x: 1, y: 0 }; } }}
-              className="bg-white border-4 border-black p-4 active:bg-gray-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-bold text-xl transition-all"
+              className="clay-btn bg-surface p-4 flex items-center justify-center font-black text-xl"
             >
               →
             </button>

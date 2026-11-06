@@ -2,6 +2,8 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import ClayNav from "@/components/ClayNav";
+import ClayBlobs from "@/components/ClayBlobs";
 
 export default function GamesHub() {
   const games = [
@@ -9,70 +11,63 @@ export default function GamesHub() {
       title: "Snake",
       desc: "The classic retro snake game.",
       link: "/games/snake",
-      color: "bg-[#9bc400]",
+      color: "bg-lime-200",
       icon: "🐍"
     },
     {
       title: "Flappy Bird",
       desc: "Flap your wings and dodge the pipes.",
       link: "/games/flappy",
-      color: "bg-blue-300",
+      color: "bg-sky-200",
       icon: "🐦"
     },
     {
       title: "Lucky Spin",
       desc: "Spin the wheel and test your luck!",
       link: "/games/spin",
-      color: "bg-purple-300",
+      color: "bg-violet-200",
       icon: "🎡"
     },
     {
       title: "Free Draw",
       desc: "Unleash your creativity and draw anything!",
       link: "/games/draw",
-      color: "bg-pink-300",
+      color: "bg-pink-200",
       icon: "🎨"
     },
     {
       title: "Tebak-Tebakan",
       desc: "Uji wawasanmu tentang Indonesia!",
       link: "/games/trivia",
-      color: "bg-orange-300",
+      color: "bg-orange-200",
       icon: "🇮🇩"
     },
     {
       title: "Virtual Piano",
       desc: "Mainkan melodi dengan piano virtual!",
       link: "/games/piano",
-      color: "bg-teal-300",
+      color: "bg-teal-200",
       icon: "🎹"
     }
   ];
 
   return (
-    <div className="min-h-screen font-sans selection:bg-yellow-300 bg-gray-50 flex flex-col">
-      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black tracking-tighter uppercase hover:underline underline-offset-4 decoration-4">
-            SB.
-          </Link>
-          <div className="flex gap-6 font-bold text-lg">
-            <Link href="/" className="hover:underline underline-offset-4 decoration-4">Back to Home</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-sans text-slate-700 flex flex-col relative">
+      <ClayBlobs colors={["bg-lime-300", "bg-violet-300", "bg-amber-300"]} />
+      <ClayNav links={[{ href: "/", label: "Back to Home" }]} />
 
       <main className="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
-        <motion.div 
-          initial={{ opacity: 0, y: 50 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 150, damping: 16 }}
           className="flex flex-col items-center mb-16"
         >
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4 bg-yellow-300 px-6 py-3 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+          <h1 className="clay bg-amber-200 text-5xl md:text-7xl font-black tracking-tight text-amber-900 mb-6 px-8 py-4 -rotate-2 animate-squish">
             Games Hub
           </h1>
-          <p className="text-xl font-bold bg-white px-4 py-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            Choose your mini game!
+          <p className="clay-sm bg-surface/80 text-xl font-bold px-5 py-2">
+            Choose your mini game! 🎮
           </p>
         </motion.div>
 
@@ -80,27 +75,34 @@ export default function GamesHub() {
           {games.map((game, idx) => (
             <Link key={idx} href={game.link} className="group">
               <motion.div
-                whileHover={{ y: -5 }}
-                className={`${game.color} border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer h-full flex flex-col relative overflow-hidden`}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ type: "spring", stiffness: 160, damping: 18, delay: 0.1 + idx * 0.08 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className={`clay ${game.color} p-8 cursor-pointer h-full flex flex-col relative overflow-hidden`}
               >
                 {/* Background decorative icon */}
-                <div className="text-9xl absolute -bottom-4 -right-4 opacity-40 rotate-12 group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-300 pointer-events-none">
+                <div className="text-9xl absolute -bottom-4 -right-4 opacity-30 rotate-12 group-hover:scale-125 group-hover:-rotate-12 transition-transform duration-500 pointer-events-none">
                   {game.icon}
                 </div>
 
                 <div className="relative z-10 flex items-center gap-4 mb-4">
-                  <span className="text-4xl bg-white border-2 border-black w-16 h-16 flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-[-5deg] group-hover:rotate-0 transition-transform">
+                  <span
+                    className="clay-sm bg-surface text-4xl w-16 h-16 flex items-center justify-center animate-float group-hover:animate-wiggle"
+                    style={{ animationDelay: `${-idx * 0.7}s` }}
+                  >
                     {game.icon}
                   </span>
-                  <h2 className="text-4xl font-black uppercase">{game.title}</h2>
+                  <h2 className="text-3xl md:text-4xl font-black text-slate-800">{game.title}</h2>
                 </div>
-                
-                <p className="text-lg font-bold bg-white/90 p-4 border-2 border-black flex-grow relative z-10">
+
+                <p className="clay-inset bg-surface/50 text-lg font-bold p-4 flex-grow relative z-10">
                   {game.desc}
                 </p>
                 <div className="mt-6 flex justify-end relative z-10">
-                  <span className="bg-black text-white font-bold px-6 py-2 border-2 border-black group-hover:-translate-y-1 group-hover:shadow-[4px_4px_0px_0px_#fff] transition-all">
-                    Play Now
+                  <span className="clay-btn bg-violet-500 text-white font-extrabold px-6 py-2 group-hover:bg-pink-400">
+                    Play Now →
                   </span>
                 </div>
               </motion.div>

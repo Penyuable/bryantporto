@@ -20,6 +20,32 @@ import {
 import { FaJava, FaGithub, FaLinkedin, FaInstagram, FaLaravel, FaGamepad } from "react-icons/fa";
 import Link from "next/link";
 import GeminiChat from "@/components/GeminiChat";
+import ClayNav from "@/components/ClayNav";
+import ClayBlobs from "@/components/ClayBlobs";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40, scale: 0.96 },
+  show: (i: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring" as const, stiffness: 160, damping: 18, delay: i * 0.08 },
+  }),
+};
+
+function SectionTitle({ children, color }: { children: React.ReactNode; color: string }) {
+  return (
+    <motion.h2
+      initial={{ opacity: 0, x: -30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ type: "spring", stiffness: 180, damping: 18 }}
+      className={`clay ${color} inline-block text-4xl md:text-5xl font-black text-slate-800 px-8 py-4 mb-12`}
+    >
+      {children}
+    </motion.h2>
+  );
+}
 
 export default function Home() {
   const experiences = [
@@ -29,28 +55,28 @@ export default function Home() {
       period: "Present",
       desc: "Developing a web-based dashboard for real-time monitoring and task tracking across every company division.",
       tools: ["Next.js", "Nest.js", "Supabase", "Tailwind CSS"],
-      color: "bg-emerald-300",
+      color: "bg-emerald-200",
     },
     {
       company: "Bangkit Academy",
       role: "Mobile Developer",
       desc: "Developed Android mobile applications using Kotlin, Jetpack Compose, and clean architecture.",
       tools: ["Kotlin", "Android", "Jetpack Compose"],
-      color: "bg-blue-300",
+      color: "bg-sky-200",
     },
     {
       company: "PT Tiga Serangkai Inti Corpora",
       role: "Lead UI/UX Designer",
       desc: "Led UI/UX design initiatives for digital library ecosystems (Perpuskita & Perpuskita Admin Panel).",
       tools: ["Figma"],
-      color: "bg-pink-300",
+      color: "bg-pink-200",
     },
     {
       company: "Tiga Serangkai University",
       role: "Frontend Developer",
       desc: "Built frontend academic portals and web management systems for the Faculty of Engineering.",
       tools: ["PHP", "Laravel", "Figma"],
-      color: "bg-yellow-300",
+      color: "bg-amber-200",
     },
   ];
 
@@ -64,7 +90,7 @@ export default function Home() {
         { name: "Supabase", icon: <SiSupabase /> },
         { name: "Tailwind CSS", icon: <SiTailwindcss /> },
       ],
-      color: "bg-cyan-300",
+      color: "bg-cyan-200",
       link: null,
     },
     {
@@ -75,7 +101,7 @@ export default function Home() {
         { name: "Kotlin", icon: <SiKotlin /> },
         { name: "Figma", icon: <SiFigma /> }
       ],
-      color: "bg-green-300",
+      color: "bg-lime-200",
       link: "https://github.com/capstone-sleepwell",
     },
     {
@@ -86,7 +112,7 @@ export default function Home() {
         { name: "Kotlin", icon: <SiKotlin /> },
         { name: "Figma", icon: <SiFigma /> }
       ],
-      color: "bg-orange-300",
+      color: "bg-orange-200",
       link: "https://github.com/Penyuable/storyapp",
     },
     {
@@ -97,7 +123,7 @@ export default function Home() {
         { name: "Kotlin", icon: <SiKotlin /> },
         { name: "Figma", icon: <SiFigma /> }
       ],
-      color: "bg-purple-300",
+      color: "bg-violet-200",
       link: "https://github.com/Penyuable/Resep-Kita",
     },
     {
@@ -106,7 +132,7 @@ export default function Home() {
       tags: [
         { name: "Figma", icon: <SiFigma /> }
       ],
-      color: "bg-teal-300",
+      color: "bg-teal-200",
       link: null,
     },
     {
@@ -115,7 +141,7 @@ export default function Home() {
       tags: [
         { name: "Figma", icon: <SiFigma /> }
       ],
-      color: "bg-indigo-300",
+      color: "bg-indigo-200",
       link: null,
     },
     {
@@ -125,7 +151,7 @@ export default function Home() {
         { name: "PHP", icon: <SiPhp /> },
         { name: "Laravel", icon: <FaLaravel /> }
       ],
-      color: "bg-red-300",
+      color: "bg-rose-200",
       link: null,
     },
   ];
@@ -149,173 +175,196 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen font-sans selection:bg-yellow-300">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black print:hidden">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="text-2xl font-black tracking-tighter uppercase">
-            SB.
-          </div>
-          <div className="hidden md:flex gap-6 font-bold text-lg">
-            <a href="#experience" className="hover:underline underline-offset-4 decoration-4">Experience</a>
-            <a href="#projects" className="hover:underline underline-offset-4 decoration-4">Projects</a>
-            <a href="#skills" className="hover:underline underline-offset-4 decoration-4">Skills</a>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-sans text-slate-700 relative">
+      <ClayBlobs />
+      <ClayNav
+        collapseOnMobile
+        links={[
+          { href: "#experience", label: "Experience" },
+          { href: "#projects", label: "Projects" },
+          { href: "#skills", label: "Skills" },
+        ]}
+      />
 
       <main className="max-w-5xl mx-auto px-6 py-12 space-y-32">
         {/* Hero Section */}
-        <motion.section 
-          initial={{ opacity: 0, y: 50 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.section
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="pt-12 md:pt-24 flex flex-col items-start gap-6 relative"
+          className="pt-12 md:pt-20 flex flex-col items-start gap-6 relative"
         >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-300 border-4 border-black rounded-full -z-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] translate-x-4 -translate-y-4"></div>
-          <div className="absolute bottom-0 right-32 w-24 h-24 bg-pink-300 border-4 border-black -z-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rotate-12"></div>
-          
-          <h2 className="text-2xl md:text-4xl font-bold bg-white px-4 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2 inline-block">
-            Hi, I'm
+          {/* Floating clay shapes */}
+          <div className="absolute top-0 right-0 md:right-6 w-32 h-32 bg-amber-200 clay rounded-full! -z-10 animate-float print:hidden" />
+          <div
+            className="absolute bottom-6 right-36 w-20 h-20 bg-pink-200 clay -z-10 animate-float-slow print:hidden"
+            style={{ animationDelay: "-3s" }}
+          />
+          <div
+            className="absolute top-40 right-24 w-12 h-12 bg-sky-200 clay rounded-full! -z-10 animate-float print:hidden"
+            style={{ animationDelay: "-1.5s" }}
+          />
+
+          <h2 className="clay-sm bg-surface/80 text-2xl md:text-3xl font-extrabold text-slate-600 px-5 py-2 inline-block animate-wiggle">
+            Hi, I&apos;m 👋
           </h2>
-          <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none print:hidden">
-            Samuel <br /> Bryant
+          <h1 className="text-6xl md:text-8xl font-black tracking-tight leading-none text-slate-800 print:hidden drop-shadow-[0_6px_0_rgba(167,139,250,0.35)]">
+            Samuel <br />
+            <span className="text-violet-500">Bryant</span>
           </h1>
-          <h1 className="hidden print:block text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none mb-2">
+          <h1 className="hidden print:block text-5xl md:text-7xl font-black tracking-tight leading-none mb-2 text-slate-800">
             Samuel Bryant <br /> Eka Putra
           </h1>
-          <p className="hidden print:block text-lg font-bold bg-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] mb-4 self-start">
+          <p className="hidden print:block clay-sm bg-surface text-lg font-bold px-4 py-1 mb-4 self-start">
             Surakarta, Central Java
           </p>
-          <p className="text-xl md:text-3xl font-bold max-w-2xl bg-blue-300 px-4 py-2 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-            Web Developer
+          <p className="clay bg-sky-200 text-xl md:text-3xl font-extrabold text-sky-900 max-w-2xl px-6 py-3">
+            Fullstack Dev
           </p>
-          <div className="flex gap-4 mt-2">
-            <a href="https://github.com/Penyuable" target="_blank" rel="noopener noreferrer" className="bg-white border-4 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform" aria-label="GitHub">
+          <div className="flex flex-wrap gap-4 mt-2">
+            <a href="https://github.com/Penyuable" target="_blank" rel="noopener noreferrer" className="clay-btn bg-surface p-3.5 text-slate-800" aria-label="GitHub">
               <FaGithub className="w-6 h-6" />
             </a>
-            <a href="https://www.linkedin.com/in/samuel-bryant-eka-putra/" target="_blank" rel="noopener noreferrer" className="bg-blue-500 text-white border-4 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com/in/samuel-bryant-eka-putra/" target="_blank" rel="noopener noreferrer" className="clay-btn bg-sky-400 text-white p-3.5" aria-label="LinkedIn">
               <FaLinkedin className="w-6 h-6" />
             </a>
-            <a href="https://instagram.com/bryhere_" target="_blank" rel="noopener noreferrer" className="bg-pink-500 text-white border-4 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform print:hidden" aria-label="Instagram">
+            <a href="https://instagram.com/bryhere_" target="_blank" rel="noopener noreferrer" className="clay-btn bg-pink-400 text-white p-3.5 print:hidden" aria-label="Instagram">
               <FaInstagram className="w-6 h-6" />
             </a>
-            <button onClick={() => window.print()} className="bg-yellow-300 font-bold border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform print:hidden flex items-center gap-2">
+            <button onClick={() => window.print()} className="clay-btn bg-amber-200 text-amber-900 font-extrabold px-5 py-2 print:hidden flex items-center gap-2">
               Export PDF
             </button>
-            <Link href="/games" className="bg-[#9bc400] font-bold border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform print:hidden flex items-center gap-2">
+            <Link href="/games" className="clay-btn bg-lime-300 text-lime-900 font-extrabold px-5 py-2 print:hidden flex items-center gap-2">
               <FaGamepad className="w-5 h-5" /> Mini Game
             </Link>
           </div>
-          <p className="hidden print:block text-lg font-medium max-w-3xl bg-white border-4 border-black p-4 mt-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <p className="hidden print:block clay bg-surface text-lg font-medium max-w-3xl p-5 mt-6">
             As a versatile IT Developer, Front-End and Mobile Developer with a specialized focus on UI/UX Design, I am dedicated to crafting digital products that seamlessly blend technical logic with aesthetic appeal. Currently serving as an IT Developer at Kemenangan Masindo Group developing enterprise web dashboards using Next.js, Nest.js, Supabase, and Tailwind CSS. Grounded in my Informatics background, Bangkit Academy alumni experience, and hands-on industry development, I am committed to delivering innovative, user-centric digital experiences.
           </p>
         </motion.section>
 
         {/* Experience Section */}
-        <section id="experience" className="scroll-mt-24 print:break-before-page">
-          <h2 className="text-5xl font-black uppercase mb-12 border-b-4 border-black pb-4 inline-block">Experience</h2>
+        <section id="experience" className="scroll-mt-28 print:break-before-page">
+          <SectionTitle color="bg-emerald-200">Experience</SectionTitle>
           <div className="grid md:grid-cols-2 gap-8">
             {experiences.map((exp, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className={`${exp.color} border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] break-inside-avoid flex flex-col justify-between`}
+                custom={idx}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-60px" }}
+                whileHover={{ y: -8, rotate: idx % 2 ? 0.6 : -0.6 }}
+                className={`clay ${exp.color} p-7 break-inside-avoid flex flex-col justify-between`}
               >
                 <div>
-                  <div className="flex justify-between items-start gap-2 mb-2">
-                    <h3 className="text-2xl font-bold">{exp.company}</h3>
+                  <div className="flex justify-between items-start gap-2 mb-3">
+                    <h3 className="text-2xl font-black text-slate-800">{exp.company}</h3>
                     {exp.period && (
-                      <span className="bg-white border-2 border-black px-2.5 py-0.5 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] shrink-0">
+                      <span className="clay-sm rounded-full! bg-surface px-3 py-1 text-xs font-black uppercase text-emerald-700 shrink-0 animate-pulse">
                         {exp.period}
                       </span>
                     )}
                   </div>
-                  <p className="text-xl font-semibold mb-4 bg-white border-2 border-black inline-block px-2 py-1">
+                  <p className="clay-sm bg-surface/80 text-lg font-extrabold text-slate-700 mb-4 inline-block px-3 py-1">
                     {exp.role}
                   </p>
                   {exp.desc && (
-                    <p className="text-base font-medium mb-4 bg-white/80 p-3 border-2 border-black">
+                    <p className="clay-inset bg-surface/50 text-base font-semibold mb-5 p-4">
                       {exp.desc}
                     </p>
                   )}
                 </div>
                 <div className="flex flex-wrap gap-2 mt-auto">
                   {exp.tools.map((tool, i) => (
-                    <span
-                      key={i}
-                      className="bg-white border-2 border-black px-3 py-1 font-bold text-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                    >
+                    <span key={i} className="clay-sm rounded-full! bg-surface px-3 py-1 font-bold text-sm">
                       {tool}
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
 
         {/* Projects Section */}
-        <section id="projects" className="scroll-mt-24 print:break-before-page">
-          <h2 className="text-5xl font-black uppercase mb-12 border-b-4 border-black pb-4 inline-block">Projects</h2>
+        <section id="projects" className="scroll-mt-28 print:break-before-page">
+          <SectionTitle color="bg-pink-200">Projects</SectionTitle>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className={`${project.color} border-4 border-black p-6 flex flex-col h-full shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] break-inside-avoid`}
+                custom={idx % 3}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-60px" }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className={`clay ${project.color} p-6 flex flex-col h-full break-inside-avoid`}
               >
                 <div className="flex justify-between items-start mb-4 gap-4">
-                  <h3 className="text-2xl font-bold">{project.title}</h3>
+                  <h3 className="text-2xl font-black text-slate-800">{project.title}</h3>
                   {project.link ? (
-                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="bg-white border-2 border-black p-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform shrink-0" aria-label="View on GitHub">
+                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="clay-btn bg-surface p-2.5 shrink-0" aria-label="View on GitHub">
                       <FaGithub className="w-5 h-5" />
                     </a>
                   ) : (
-                    <span className="bg-gray-200 border-2 border-black px-2 py-1 text-xs font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-not-allowed shrink-0" title="Restricted Company Project">
-                      Private
+                    <span className="clay-inset rounded-full! bg-surface/50 px-3 py-1 text-xs font-bold text-slate-500 cursor-not-allowed shrink-0" title="Restricted Company Project">
+                      🔒 Private
                     </span>
                   )}
                 </div>
-                <p className="text-lg font-medium mb-6 flex-grow bg-white/80 p-3 border-2 border-black">
+                <p className="clay-inset bg-surface/50 text-base font-semibold mb-6 flex-grow p-4">
                   {project.desc}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-auto">
                   {project.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="bg-white border-2 border-black px-3 py-1 font-bold text-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1.5"
-                    >
+                    <span key={i} className="clay-sm rounded-full! bg-surface px-3 py-1 font-bold text-sm flex items-center gap-1.5">
                       {tag.icon}
                       {tag.name}
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
 
         {/* Skills Section */}
-        <section id="skills" className="scroll-mt-24 pb-24 print:break-before-page">
-          <h2 className="text-5xl font-black uppercase mb-12 border-b-4 border-black pb-4 inline-block">Skills</h2>
+        <section id="skills" className="scroll-mt-28 pb-24 print:break-before-page">
+          <SectionTitle color="bg-amber-200">Skills</SectionTitle>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
             {skills.map((skill, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className="bg-white border-4 border-black p-6 flex flex-col items-center justify-center gap-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:bg-yellow-100 cursor-default break-inside-avoid"
+                custom={idx % 5}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+                whileHover={{ y: -8, scale: 1.06 }}
+                whileTap={{ scale: 0.94 }}
+                className="clay bg-surface/80 p-6 flex flex-col items-center justify-center gap-4 cursor-default break-inside-avoid group"
               >
-                {skill.icon}
-                <span className="font-bold text-lg">{skill.name}</span>
-              </div>
+                <div
+                  className="clay-sm rounded-full! bg-violet-100 text-violet-700 p-3 animate-float group-hover:animate-wiggle"
+                  style={{ animationDelay: `${-idx * 0.4}s` }}
+                >
+                  {skill.icon}
+                </div>
+                <span className="font-extrabold text-lg text-slate-700">{skill.name}</span>
+              </motion.div>
             ))}
           </div>
         </section>
       </main>
-      
+
       {/* Footer */}
-      <footer className="bg-black text-white py-8 border-t-4 border-black break-inside-avoid">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <p className="font-bold text-xl uppercase tracking-widest">Samuel Bryant</p>
-          <p className="font-medium mt-2">@2026 bryxy</p>
+      <footer className="px-4 pb-6 break-inside-avoid">
+        <div className="clay max-w-5xl mx-auto bg-violet-300 py-8 px-6 text-center">
+          <p className="font-black text-xl uppercase tracking-widest text-violet-900">Samuel Bryant</p>
+          <p className="font-semibold mt-2 text-violet-800">@2026 bryxy</p>
         </div>
       </footer>
       <GeminiChat

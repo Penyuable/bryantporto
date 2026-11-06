@@ -150,32 +150,32 @@ Jika pengguna hanya bertanya biasa tanpa menyuruh menggambar, balas teks biasa (
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans print:hidden">
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key="chat-window"
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            initial={{ opacity: 0, y: 30, scale: 0.85 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] w-80 sm:w-96 mb-4 flex flex-col"
-            style={{ maxHeight: "80vh" }}
+            exit={{ opacity: 0, y: 30, scale: 0.85 }}
+            transition={{ type: "spring", stiffness: 300, damping: 22 }}
+            style={{ maxHeight: "80vh", transformOrigin: "bottom right" }}
+            className="clay bg-surface/85 backdrop-blur-md w-80 sm:w-96 mb-4 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex justify-between items-center border-b-4 border-black p-3 bg-purple-400 shrink-0">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">🤖</span>
+            <div className="flex justify-between items-center p-4 bg-violet-200 shrink-0 rounded-t-[2rem] shadow-[inset_0_-4px_8px_rgba(0,0,0,0.05)]">
+              <div className="flex items-center gap-3">
+                <span className="clay-sm rounded-full! bg-surface w-11 h-11 flex items-center justify-center text-2xl animate-squish">🤖</span>
                 <div>
-                  <h3 className="font-black uppercase tracking-tight text-sm leading-none">Gemini AI</h3>
-                  <p className="text-xs font-bold opacity-70 leading-none mt-0.5">
+                  <h3 className="font-black tracking-tight text-base leading-none text-violet-900">Gemini AI</h3>
+                  <p className="text-xs font-bold text-violet-700/80 leading-none mt-1">
                     {canDraw ? "Asisten & Pelukis AI" : "Asisten Pintarmu"}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="font-black text-lg w-8 h-8 border-2 border-black bg-white flex items-center justify-center hover:bg-red-400 transition-colors"
+                className="clay-btn rounded-full! bg-surface w-9 h-9 flex items-center justify-center font-black text-slate-600 hover:bg-rose-200"
               >
                 ✕
               </button>
@@ -183,52 +183,66 @@ Jika pengguna hanya bertanya biasa tanpa menyuruh menggambar, balas teks biasa (
 
             {/* Messages */}
             <div
-              className="flex-1 overflow-y-auto p-3 bg-slate-50 flex flex-col gap-3 min-h-0"
+              className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0"
               style={{ maxHeight: "340px" }}
             >
               {messages.length === 0 && (
-                <div className="bg-white border-2 border-black p-3 rounded-tr-xl rounded-br-xl rounded-bl-xl shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] text-sm leading-relaxed">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="clay-sm bg-surface p-3 rounded-tl-md! text-sm leading-relaxed font-semibold"
+                >
                   Halo! Aku Gemini AI 👋
                   {canDraw
                     ? " Aku bisa melihat kanvasmu, menjawab pertanyaan, dan menggambar untukmu!"
                     : " Tanyakan apa saja tentang portofolio ini!"}
-                </div>
+                </motion.div>
               )}
               {messages.map((msg, i) => (
-                <div
+                <motion.div
                   key={i}
-                  className={`text-sm p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] whitespace-pre-wrap max-w-[85%] leading-relaxed ${
+                  initial={{ opacity: 0, scale: 0.8, x: msg.role === "user" ? 20 : -20 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                  className={`clay-sm text-sm p-3 whitespace-pre-wrap max-w-[85%] leading-relaxed font-semibold ${
                     msg.role === "user"
-                      ? "bg-yellow-300 self-end rounded-tl-xl rounded-bl-xl rounded-br-xl ml-auto"
-                      : "bg-white self-start rounded-tr-xl rounded-br-xl rounded-bl-xl"
+                      ? "bg-amber-200 text-amber-950 self-end rounded-tr-md! ml-auto"
+                      : "bg-surface self-start rounded-tl-md!"
                   }`}
                 >
                   {msg.content}
-                </div>
+                </motion.div>
               ))}
               {isLoading && (
-                <div className="bg-gray-200 border-2 border-black p-3 self-start rounded-tr-xl rounded-br-xl rounded-bl-xl text-sm animate-pulse shadow-[3px_3px_0px_0px_rgba(0,0,0,0.1)]">
-                  ✦ Sedang berpikir...
+                <div className="clay-sm bg-violet-100 p-3 self-start rounded-tl-md! text-sm font-bold text-violet-700 flex items-center gap-1.5">
+                  {[0, 1, 2].map((d) => (
+                    <span
+                      key={d}
+                      className="w-2 h-2 rounded-full bg-violet-500 animate-bounce"
+                      style={{ animationDelay: `${d * 0.15}s` }}
+                    />
+                  ))}
+                  <span className="ml-1">Sedang berpikir...</span>
                 </div>
               )}
               <div ref={chatEndRef} />
             </div>
 
             {/* Input */}
-            <div className="flex border-t-4 border-black shrink-0">
+            <div className="flex gap-2 p-3 shrink-0">
               <input
                 type="text"
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleSend()}
                 placeholder={canDraw ? "Tanya atau minta AI menggambar..." : "Ketik pertanyaanmu..."}
-                className="flex-1 p-3 text-sm focus:outline-none focus:bg-yellow-50 border-r-2 border-black font-medium"
+                className="clay-inset bg-slate-50 flex-1 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-300 font-semibold"
                 disabled={isLoading}
               />
               <button
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
-                className="bg-green-400 font-black text-lg px-4 border-l-2 border-black hover:-translate-y-0.5 transition-transform disabled:opacity-40 disabled:hover:translate-y-0 active:translate-y-0 shrink-0"
+                className="clay-btn bg-emerald-300 text-emerald-900 font-black text-lg px-4 shrink-0"
               >
                 ➤
               </button>
@@ -238,19 +252,21 @@ Jika pengguna hanya bertanya biasa tanpa menyuruh menggambar, balas teks biasa (
       </AnimatePresence>
 
       {/* FAB Button */}
-      <motion.button
-        onClick={() => setIsOpen(prev => !prev)}
-        whileHover={{ scale: 1.1, rotate: isOpen ? 0 : 12 }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-purple-400 border-4 border-black w-16 h-16 rounded-full shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center relative"
-      >
-        <span className="text-3xl">{isOpen ? "✕" : "🤖"}</span>
-        {!isOpen && (
-          <span className="absolute -top-2 -right-2 bg-yellow-300 border-2 border-black text-[10px] px-1.5 py-0.5 font-black rounded-full animate-pulse">
-            AI
-          </span>
-        )}
-      </motion.button>
+      <div className={isOpen ? "" : "animate-float"}>
+        <motion.button
+          onClick={() => setIsOpen(prev => !prev)}
+          whileHover={{ scale: 1.12, rotate: isOpen ? 0 : 12 }}
+          whileTap={{ scale: 0.9 }}
+          className="clay rounded-full! bg-violet-300 w-16 h-16 flex items-center justify-center relative"
+        >
+          <span className="text-3xl">{isOpen ? "✕" : "🤖"}</span>
+          {!isOpen && (
+            <span className="clay-sm rounded-full! absolute -top-2 -right-2 bg-amber-200 text-[10px] px-2 py-0.5 font-black text-amber-900 animate-pulse">
+              AI
+            </span>
+          )}
+        </motion.button>
+      </div>
     </div>
   );
 }

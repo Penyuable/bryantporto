@@ -3,16 +3,18 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import GeminiChat from "@/components/GeminiChat";
+import ClayNav from "@/components/ClayNav";
+import ClayBlobs from "@/components/ClayBlobs";
 
 const PRIZES = [
-  { text: "iPhone 15", color: "#f87171" },   // red-400
-  { text: "Zonk!", color: "#d1d5db" },       // gray-300
-  { text: "Rp 1 Juta", color: "#facc15" },   // yellow-400
-  { text: "Zonk!", color: "#d1d5db" },       // gray-300
-  { text: "MacBook", color: "#4ade80" },     // green-400
-  { text: "Zonk!", color: "#d1d5db" },       // gray-300
-  { text: "PS5", color: "#60a5fa" },         // blue-400
-  { text: "Zonk!", color: "#d1d5db" }        // gray-300
+  { text: "iPhone 15", color: "#fca5a5" },   // red-300
+  { text: "Zonk!", color: "#e2e8f0" },       // slate-200
+  { text: "Rp 1 Juta", color: "#fde68a" },   // amber-200
+  { text: "Zonk!", color: "#e2e8f0" },       // slate-200
+  { text: "MacBook", color: "#86efac" },     // green-300
+  { text: "Zonk!", color: "#e2e8f0" },       // slate-200
+  { text: "PS5", color: "#93c5fd" },         // blue-300
+  { text: "Zonk!", color: "#e2e8f0" }        // slate-200
 ];
 
 const SPIN_DURATION = 4; // seconds
@@ -55,90 +57,88 @@ export default function SpinWheelPage() {
   }).join(", ");
 
   return (
-    <div className="min-h-screen font-sans selection:bg-yellow-300 bg-gray-50 flex flex-col overflow-hidden">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black tracking-tighter uppercase hover:underline underline-offset-4 decoration-4">
-            SB.
-          </Link>
-          <div className="flex gap-6 font-bold text-lg">
-            <Link href="/games" className="hover:underline underline-offset-4 decoration-4">Back to Games</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-sans text-slate-700 flex flex-col overflow-hidden relative">
+      <ClayBlobs colors={["bg-violet-300", "bg-pink-300", "bg-amber-300"]} />
+      <ClayNav links={[{ href: "/games", label: "Back to Games" }]} />
 
       <main className="flex-grow flex items-center justify-center p-6 relative">
         {/* Background Decorative Elements */}
-        <div className="absolute top-20 left-10 w-24 h-24 bg-pink-300 border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -z-10" />
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-yellow-300 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-12 -z-10" />
+        <div className="absolute top-20 left-10 w-24 h-24 bg-pink-200 clay rounded-full! animate-float" />
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-amber-200 clay rotate-12 animate-float-slow" />
 
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }} 
-          animate={{ opacity: 1, scale: 1 }} 
-          className="bg-white border-4 border-black p-4 md:p-8 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center w-full max-w-xl z-10"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 160, damping: 18 }}
+          className="clay bg-surface/80 backdrop-blur-sm p-5 md:p-8 flex flex-col items-center w-full max-w-xl z-10"
         >
-          <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-8 bg-purple-300 px-4 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-            Lucky Spin
+          <h1 className="clay bg-violet-200 text-3xl md:text-5xl font-black tracking-tight text-violet-900 mb-10 px-6 py-3 -rotate-2 animate-squish">
+            Lucky Spin 🎡
           </h1>
-          
-          <div className="relative flex flex-col items-center mb-8">
+
+          <div className="relative flex flex-col items-center mb-10">
             {/* Pointer */}
-            <svg 
-              className="absolute -top-6 z-20 w-12 h-12 text-pink-500 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]" 
-              viewBox="0 0 24 24" 
-              fill="currentColor" 
-              stroke="black" 
+            <svg
+              className={`absolute -top-7 z-20 w-12 h-12 text-pink-400 drop-shadow-[0_4px_4px_rgba(190,24,93,0.35)] ${isSpinning ? "animate-wiggle" : ""}`}
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              stroke="white"
               strokeWidth="1.5"
+              strokeLinejoin="round"
             >
               <path d="M12 22L2 2h20L12 22z" />
             </svg>
 
-            {/* Wheel */}
-            <div 
-              className="relative w-72 h-72 md:w-80 md:h-80 rounded-full border-8 border-black overflow-hidden shadow-[8px_8px_0px_rgba(0,0,0,1)]"
-              style={{
-                background: `conic-gradient(${gradient})`,
-                transition: `transform ${SPIN_DURATION}s cubic-bezier(0.2, 0.8, 0.2, 1)`,
-                transform: `rotate(${rotation}deg)`
-              }}
-            >
-              {/* Lines and Text */}
-              {PRIZES.map((prize, i) => {
-                const angle = i * SLICE_ANGLE + (SLICE_ANGLE / 2);
-                return (
-                  <React.Fragment key={i}>
-                    {/* Border line */}
-                    <div
-                      className="absolute top-0 left-1/2 w-1 h-1/2 bg-black origin-bottom -translate-x-1/2 z-10"
-                      style={{ transform: `rotate(${i * SLICE_ANGLE}deg)` }}
-                    />
-                    {/* Text */}
-                    <div 
-                      className="absolute w-full h-full z-10"
-                      style={{ transform: `rotate(${angle}deg)` }}
-                    >
-                      <span 
-                        className="absolute left-1/2 top-4 md:top-6 -translate-x-1/2 font-black text-black uppercase whitespace-nowrap text-[10px] md:text-sm drop-shadow-md"
+            {/* Wheel rim */}
+            <div className="clay rounded-full! bg-surface p-3">
+              {/* Wheel */}
+              <div
+                className="relative w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden"
+                style={{
+                  background: `conic-gradient(${gradient})`,
+                  transition: `transform ${SPIN_DURATION}s cubic-bezier(0.2, 0.8, 0.2, 1)`,
+                  transform: `rotate(${rotation}deg)`,
+                  boxShadow: "inset 0 0 0 4px rgba(255,255,255,0.6), inset -10px -10px 24px rgba(0,0,0,0.12), inset 10px 10px 24px rgba(255,255,255,0.45)",
+                }}
+              >
+                {/* Lines and Text */}
+                {PRIZES.map((prize, i) => {
+                  const angle = i * SLICE_ANGLE + (SLICE_ANGLE / 2);
+                  return (
+                    <React.Fragment key={i}>
+                      {/* Divider line */}
+                      <div
+                        className="absolute top-0 left-1/2 w-1 h-1/2 bg-surface/80 origin-bottom -translate-x-1/2 z-10 rounded-full"
+                        style={{ transform: `rotate(${i * SLICE_ANGLE}deg)` }}
+                      />
+                      {/* Text */}
+                      <div
+                        className="absolute w-full h-full z-10"
+                        style={{ transform: `rotate(${angle}deg)` }}
                       >
-                        {prize.text}
-                      </span>
-                    </div>
-                  </React.Fragment>
-                );
-              })}
-              {/* Center Dot */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-black rounded-full z-20 shadow-inner" />
+                        <span
+                          className="absolute left-1/2 top-4 md:top-6 -translate-x-1/2 font-black text-[#1e293b] uppercase whitespace-nowrap text-[10px] md:text-sm drop-shadow-[0_1px_0_rgba(255,255,255,0.7)]"
+                        >
+                          {prize.text}
+                        </span>
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
+                {/* Center knob */}
+                <div
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-surface rounded-full z-20"
+                  style={{ boxShadow: "0 6px 12px rgba(88,80,160,0.35), inset -4px -4px 8px rgba(0,0,0,0.1), inset 4px 4px 8px rgba(255,255,255,0.9)" }}
+                />
+              </div>
             </div>
           </div>
 
-          <button 
+          <button
             onClick={spin}
             disabled={isSpinning}
-            className={`font-black text-2xl uppercase border-4 border-black px-8 py-4 transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${
-              isSpinning 
-                ? "bg-gray-300 translate-y-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-not-allowed" 
-                : "bg-yellow-300 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:shadow-none"
+            className={`clay-btn font-black text-2xl uppercase px-10 py-4 ${
+              isSpinning ? "bg-slate-200 text-slate-500" : "bg-amber-200 text-amber-900"
             }`}
           >
             {isSpinning ? "Spinning..." : "SPIN NOW!"}
@@ -146,21 +146,30 @@ export default function SpinWheelPage() {
 
           {/* Result Popup Overlay */}
           {result && !isSpinning && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.5, y: 50 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 14 }}
               className="absolute inset-0 flex items-center justify-center z-50 p-6"
             >
-              <div className="bg-white border-8 border-black p-8 flex flex-col items-center shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] rotate-2 max-w-sm w-full">
-                <h2 className="text-4xl font-black uppercase mb-2">
+              <div className="clay bg-surface p-8 flex flex-col items-center rotate-2 max-w-sm w-full">
+                <motion.div
+                  initial={{ rotate: -20, scale: 0 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 10, delay: 0.15 }}
+                  className="text-6xl mb-2"
+                >
+                  {result === "Zonk!" ? "😵" : "🎉"}
+                </motion.div>
+                <h2 className="text-4xl font-black text-slate-800 mb-3">
                   {result === "Zonk!" ? "Ouch!" : "Winner!"}
                 </h2>
-                <p className="text-2xl font-bold bg-green-300 border-2 border-black px-4 py-2 mb-6 text-center">
+                <p className={`clay-sm ${result === "Zonk!" ? "bg-slate-200" : "bg-emerald-200 text-emerald-900"} text-2xl font-extrabold px-5 py-2 mb-6 text-center`}>
                   You got: {result}
                 </p>
-                <button 
+                <button
                   onClick={() => setResult(null)}
-                  className="bg-black text-white font-bold text-xl px-6 py-2 border-4 border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transition-transform"
+                  className="clay-btn bg-violet-400 text-white font-extrabold text-xl px-8 py-2"
                 >
                   Close
                 </button>

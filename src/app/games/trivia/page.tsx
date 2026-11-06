@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import GeminiChat from "@/components/GeminiChat";
+import ClayNav from "@/components/ClayNav";
+import ClayBlobs from "@/components/ClayBlobs";
 
 const QUESTIONS = [
   {
@@ -86,98 +88,121 @@ export default function TriviaGamePage() {
   const currentQ = QUESTIONS[currentQuestionIdx];
 
   return (
-    <div className="min-h-screen font-sans selection:bg-yellow-300 bg-gray-50 flex flex-col overflow-hidden">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black tracking-tighter uppercase hover:underline underline-offset-4 decoration-4">
-            SB.
-          </Link>
-          <div className="flex gap-6 font-bold text-lg">
-            <Link href="/games" className="hover:underline underline-offset-4 decoration-4">Back to Games</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-sans text-slate-700 flex flex-col overflow-hidden relative">
+      <ClayBlobs colors={["bg-orange-300", "bg-rose-300", "bg-sky-300"]} />
+      <ClayNav links={[{ href: "/games", label: "Back to Games" }]} />
 
       <main className="flex-grow flex items-center justify-center p-6 relative w-full">
         {/* Background Decorative Elements */}
-        <div className="absolute top-20 left-10 w-24 h-24 bg-blue-300 border-4 border-black rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -z-10" />
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-green-300 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-12 -z-10" />
-        <div className="absolute top-40 right-20 w-16 h-16 bg-yellow-300 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-45 -z-10" />
+        <div className="absolute top-20 left-10 w-24 h-24 bg-sky-200 clay rounded-full! animate-float" />
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-emerald-200 clay rotate-12 animate-float-slow" />
+        <div className="absolute top-40 right-20 w-16 h-16 bg-amber-200 clay rotate-45 animate-float" style={{ animationDelay: "-2s" }} />
 
-        <div className="w-full max-w-2xl">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
+        <div className="w-full max-w-2xl relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 160, damping: 18 }}
             className="flex flex-col items-center mb-8"
           >
-            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4 bg-orange-300 px-6 py-3 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -rotate-2 text-center">
-              Tebak-Tebakan ID
+            <h1 className="clay bg-orange-200 text-orange-900 text-3xl md:text-5xl font-black tracking-tight mb-5 px-6 py-3 -rotate-2 text-center animate-squish">
+              Tebak-Tebakan ID 🇮🇩
             </h1>
-            <p className="text-xl font-bold bg-white px-4 py-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <motion.p
+              key={score}
+              initial={{ scale: 1.2 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 12 }}
+              className="clay-sm bg-surface text-xl font-extrabold px-5 py-2"
+            >
               Score: {score} / {QUESTIONS.length}
-            </p>
+            </motion.p>
           </motion.div>
 
           <AnimatePresence mode="wait">
             {!isFinished ? (
-              <motion.div 
+              <motion.div
                 key={currentQuestionIdx}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                className="bg-white border-4 border-black p-6 md:p-10 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center w-full relative"
+                initial={{ opacity: 0, x: 60, rotate: 2 }}
+                animate={{ opacity: 1, x: 0, rotate: 0 }}
+                exit={{ opacity: 0, x: -60, rotate: -2 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                className="clay bg-surface/85 backdrop-blur-sm p-6 md:p-10 flex flex-col items-center w-full relative"
               >
-                <div className="absolute -top-4 -left-4 bg-yellow-300 border-4 border-black font-black text-xl w-12 h-12 flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-[-10deg]">
+                <div className="clay-sm rounded-full! absolute -top-5 -left-4 bg-amber-200 text-amber-900 font-black text-xl w-14 h-14 flex items-center justify-center -rotate-12 animate-wiggle">
                   {currentQuestionIdx + 1}
                 </div>
 
-                <h2 className="text-2xl md:text-3xl font-black text-center mb-8 mt-4">
+                {/* Progress bar */}
+                <div className="clay-inset w-full h-4 bg-slate-100 mb-6 rounded-full! overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full bg-orange-300"
+                    initial={{ width: `${(currentQuestionIdx / QUESTIONS.length) * 100}%` }}
+                    animate={{ width: `${((currentQuestionIdx + 1) / QUESTIONS.length) * 100}%` }}
+                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                  />
+                </div>
+
+                <h2 className="text-2xl md:text-3xl font-black text-slate-800 text-center mb-8">
                   {currentQ.question}
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                   {currentQ.options.map((option, idx) => {
-                    let btnColor = "bg-white hover:bg-gray-100";
-                    let isThisSelected = selectedOption === option;
+                    let btnColor = "bg-surface text-slate-700";
+                    const isThisSelected = selectedOption === option;
 
                     if (selectedOption) {
                       if (option === currentQ.answer) {
-                        btnColor = "bg-green-400 text-white"; // Highlight correct answer
+                        btnColor = "bg-emerald-300 text-emerald-900"; // Highlight correct answer
                       } else if (isThisSelected && !isCorrect) {
-                        btnColor = "bg-red-400 text-white"; // Highlight wrong answer
+                        btnColor = "bg-rose-300 text-rose-900"; // Highlight wrong answer
                       }
                     }
 
+                    const shake = selectedOption && isThisSelected && !isCorrect;
+                    const bounce = selectedOption && option === currentQ.answer;
+
                     return (
-                      <button
+                      <motion.button
                         key={idx}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={
+                          shake
+                            ? { opacity: 1, y: 0, x: [0, -10, 10, -8, 8, 0] }
+                            : bounce
+                            ? { opacity: 1, y: [0, -10, 0], x: 0 }
+                            : { opacity: 1, y: 0, x: 0 }
+                        }
+                        transition={{ duration: shake || bounce ? 0.5 : 0.3, delay: selectedOption ? 0 : idx * 0.06 }}
                         onClick={() => handleOptionClick(option)}
                         disabled={!!selectedOption}
-                        className={`text-lg font-bold border-4 border-black p-4 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center text-center ${btnColor} ${!selectedOption && "hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none"}`}
+                        className={`clay-btn text-lg font-extrabold p-4 flex items-center justify-center text-center disabled:opacity-100! disabled:cursor-default! ${btnColor}`}
                       >
                         {option}
-                      </button>
+                      </motion.button>
                     );
                   })}
                 </div>
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 key="finished"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white border-4 border-black p-8 md:p-12 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center text-center w-full"
+                transition={{ type: "spring", stiffness: 220, damping: 14 }}
+                className="clay bg-surface/85 backdrop-blur-sm p-8 md:p-12 flex flex-col items-center text-center w-full"
               >
-                <h2 className="text-4xl md:text-5xl font-black uppercase mb-6">
+                <div className="text-7xl mb-4 animate-float">{score === QUESTIONS.length ? "🏆" : "🎯"}</div>
+                <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-6">
                   {score === QUESTIONS.length ? "Sempurna! 🇮🇩" : "Permainan Selesai!"}
                 </h2>
-                <p className="text-2xl font-bold mb-8 bg-blue-200 border-2 border-black px-6 py-3">
+                <p className="clay-sm bg-sky-200 text-sky-900 text-2xl font-extrabold mb-8 px-6 py-3">
                   Kamu menjawab {score} dari {QUESTIONS.length} dengan benar!
                 </p>
-                <button 
+                <button
                   onClick={restartGame}
-                  className="bg-black text-white font-black text-2xl uppercase border-4 border-black px-8 py-4 transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]"
+                  className="clay-btn bg-violet-400 text-white font-black text-2xl uppercase px-8 py-4"
                 >
                   Main Lagi
                 </button>

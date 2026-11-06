@@ -3,6 +3,8 @@ import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import GeminiChat from "@/components/GeminiChat";
+import ClayNav from "@/components/ClayNav";
+import ClayBlobs from "@/components/ClayBlobs";
 
 const COLORS = [
   "#000000", // Black
@@ -321,88 +323,78 @@ export default function DrawPage() {
     }
   };
 
+  const tools: { id: ToolType; label: string; icon: string; span?: boolean }[] = [
+    { id: "brush", label: "Brush", icon: "🖌️" },
+    { id: "spray", label: "Spray", icon: "💨" },
+    { id: "watercolor", label: "Water", icon: "💧" },
+    { id: "pastel", label: "Pastel", icon: "🖍️" },
+    { id: "fill", label: "Fill", icon: "🪣", span: true },
+  ];
+
   return (
-    <div className="min-h-screen font-sans selection:bg-yellow-300 bg-gray-50 flex flex-col">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black tracking-tighter uppercase hover:underline underline-offset-4 decoration-4">
-            Bryxy.
-          </Link>
-          <div className="flex gap-6 font-bold text-lg">
-            <Link href="/games" className="hover:underline underline-offset-4 decoration-4">Back to Games</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-sans text-slate-700 flex flex-col relative">
+      <ClayBlobs colors={["bg-pink-300", "bg-violet-300", "bg-sky-300"]} />
+      <ClayNav brand="Bx." links={[{ href: "/games", label: "Back to Games" }]} />
       <main className="flex-grow flex flex-col md:flex-row items-center justify-center p-6 gap-6 max-w-6xl mx-auto w-full">
         {/* Toolbar */}
-        <motion.div 
-          initial={{ opacity: 0, x: -50 }} 
-          animate={{ opacity: 1, x: 0 }} 
-          className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-row md:flex-col gap-6 w-full md:w-64 overflow-x-auto"
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ type: "spring", stiffness: 160, damping: 18 }}
+          className="clay bg-surface/80 backdrop-blur-sm p-6 flex flex-row md:flex-col gap-6 w-full md:w-64 overflow-x-auto"
         >
-          <h2 className="text-2xl font-black uppercase tracking-tighter bg-yellow-300 px-2 py-1 border-2 border-black -rotate-2 hidden md:inline-block w-max">
+          <h2 className="clay-sm bg-amber-200 text-amber-900 text-2xl font-black tracking-tight px-4 py-1 -rotate-2 hidden md:inline-block w-max animate-wiggle">
             Tools
           </h2>
 
           <div className="flex flex-col gap-2 min-w-max">
-            <span className="font-bold uppercase text-sm">Mode</span>
-            <div className="grid grid-cols-2 gap-2">
-              <button 
-                onClick={() => setTool("brush")}
-                className={`font-bold uppercase border-4 border-black px-2 py-1 transition-transform text-xs sm:text-sm ${tool === "brush" ? "bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]" : "bg-white hover:bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1"}`}
-              >
-                Brush
-              </button>
-              <button 
-                onClick={() => setTool("spray")}
-                className={`font-bold uppercase border-4 border-black px-2 py-1 transition-transform text-xs sm:text-sm ${tool === "spray" ? "bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]" : "bg-white hover:bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1"}`}
-              >
-                Spray
-              </button>
-              <button 
-                onClick={() => setTool("watercolor")}
-                className={`font-bold uppercase border-4 border-black px-2 py-1 transition-transform text-xs sm:text-sm ${tool === "watercolor" ? "bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]" : "bg-white hover:bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1"}`}
-              >
-                Water
-              </button>
-              <button 
-                onClick={() => setTool("pastel")}
-                className={`font-bold uppercase border-4 border-black px-2 py-1 transition-transform text-xs sm:text-sm ${tool === "pastel" ? "bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]" : "bg-white hover:bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1"}`}
-              >
-                Pastel
-              </button>
-              <button 
-                onClick={() => setTool("fill")}
-                className={`col-span-2 font-bold uppercase border-4 border-black px-2 py-1 transition-transform text-xs sm:text-sm ${tool === "fill" ? "bg-black text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]" : "bg-white hover:bg-gray-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1"}`}
-              >
-                Fill
-              </button>
+            <span className="font-extrabold uppercase text-sm text-slate-500">Mode</span>
+            <div className="grid grid-cols-2 gap-2.5">
+              {tools.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setTool(t.id)}
+                  className={`${t.span ? "col-span-2" : ""} font-extrabold px-2 py-2 text-xs sm:text-sm flex items-center justify-center gap-1 transition-all ${
+                    tool === t.id
+                      ? "clay-inset bg-violet-200 text-violet-900 scale-95"
+                      : "clay-btn bg-surface text-slate-600"
+                  }`}
+                >
+                  <span>{t.icon}</span> {t.label}
+                </button>
+              ))}
             </div>
           </div>
 
           <div className="flex flex-col gap-2 min-w-max">
-            <span className="font-bold uppercase text-sm">Colors</span>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <span className="font-extrabold uppercase text-sm text-slate-500">Colors</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
               {COLORS.map((c) => (
-                <button
+                <motion.button
                   key={c}
                   onClick={() => setColor(c)}
-                  className={`w-8 h-8 md:w-10 md:h-10 border-4 border-black transition-transform flex items-center justify-center ${
-                    color === c ? "scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-10" : "hover:scale-105"
+                  whileHover={{ scale: 1.15, y: -2 }}
+                  whileTap={{ scale: 0.85 }}
+                  animate={{ scale: color === c ? 1.15 : 1 }}
+                  className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
+                    color === c ? "ring-4 ring-violet-300 ring-offset-2 ring-offset-surface z-10" : ""
                   }`}
-                  style={{ backgroundColor: c }}
+                  style={{
+                    backgroundColor: c,
+                    boxShadow: "0 4px 8px -2px rgba(88,80,160,0.35), inset -3px -3px 6px rgba(0,0,0,0.18), inset 3px 3px 6px rgba(255,255,255,0.5)",
+                  }}
                   title={c === "#ffffff" ? "Eraser" : "Color"}
                 >
-                  {c === "#ffffff" && <span className="text-[10px] md:text-xs font-bold text-black">ER</span>}
-                </button>
+                  {c === "#ffffff" && <span className="text-[10px] md:text-xs font-black text-[#64748b]">ER</span>}
+                </motion.button>
               ))}
-              <label 
-                className="w-8 h-8 md:w-10 md:h-10 border-4 border-black transition-transform hover:scale-105 flex items-center justify-center cursor-pointer bg-[conic-gradient(red,yellow,lime,aqua,blue,magenta,red)]"
+              <label
+                className="w-8 h-8 md:w-10 md:h-10 rounded-full transition-transform hover:scale-110 flex items-center justify-center cursor-pointer bg-[conic-gradient(red,yellow,lime,aqua,blue,magenta,red)] relative"
+                style={{ boxShadow: "0 4px 8px -2px rgba(88,80,160,0.35), inset -3px -3px 6px rgba(0,0,0,0.18), inset 3px 3px 6px rgba(255,255,255,0.5)" }}
                 title="Custom Color"
               >
-                <input 
-                  type="color" 
+                <input
+                  type="color"
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
                   className="opacity-0 absolute w-0 h-0"
@@ -412,42 +404,45 @@ export default function DrawPage() {
           </div>
 
           <div className="flex flex-col gap-2 min-w-max">
-            <span className="font-bold uppercase text-sm">Brush Size ({lineWidth}px)</span>
-            <input 
-              type="range" 
-              min="1" 
-              max="50" 
-              value={lineWidth} 
-              onChange={(e) => setLineWidth(parseInt(e.target.value))}
-              className="w-full accent-black cursor-pointer"
-            />
+            <span className="font-extrabold uppercase text-sm text-slate-500">Brush Size ({lineWidth}px)</span>
+            <div className="clay-inset bg-slate-50 px-3 py-2">
+              <input
+                type="range"
+                min="1"
+                max="50"
+                value={lineWidth}
+                onChange={(e) => setLineWidth(parseInt(e.target.value))}
+                className="w-full accent-violet-500 cursor-pointer"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-row md:flex-col gap-2 mt-auto min-w-max">
-            <button 
+          <div className="flex flex-row md:flex-col gap-3 mt-auto min-w-max">
+            <button
               onClick={clearCanvas}
-              className="bg-red-400 font-bold uppercase border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-transform active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]"
+              className="clay-btn bg-rose-300 text-rose-900 font-extrabold px-4 py-2.5"
             >
-              Clear
+              🧽 Clear
             </button>
-            <button 
+            <button
               onClick={saveCanvas}
-              className="bg-blue-300 font-bold uppercase border-4 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-transform active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]"
+              className="clay-btn bg-sky-300 text-sky-900 font-extrabold px-4 py-2.5"
             >
-              Save Image
+              💾 Save Image
             </button>
           </div>
         </motion.div>
 
         {/* Canvas Area */}
-        <motion.div 
-          initial={{ opacity: 0, y: 50 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 160, damping: 18, delay: 0.1 }}
           className="flex-grow w-full max-w-3xl flex flex-col items-center"
         >
-          <div className="w-full bg-white border-4 border-black p-2 md:p-4 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] relative">
-            <div className="absolute -top-5 -right-5 bg-pink-300 border-4 border-black px-4 py-1 font-black uppercase text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-3 z-10">
-              Draw Here!
+          <div className="clay w-full bg-surface/80 p-3 md:p-4 relative">
+            <div className="clay-sm absolute -top-5 -right-3 bg-pink-200 text-pink-900 px-4 py-1 font-black text-xl rotate-3 z-10 animate-float">
+              Draw Here! ✏️
             </div>
             <canvas
               ref={canvasRef}
@@ -458,7 +453,7 @@ export default function DrawPage() {
               onTouchStart={startDrawing}
               onTouchEnd={finishDrawing}
               onTouchMove={draw}
-              className="w-full h-[60vh] md:h-[70vh] border-2 border-black bg-white cursor-crosshair touch-none"
+              className="w-full h-[60vh] md:h-[70vh] rounded-[1.5rem] bg-white cursor-crosshair touch-none shadow-[inset_4px_4px_10px_rgba(88,80,160,0.15)]"
             />
           </div>
         </motion.div>

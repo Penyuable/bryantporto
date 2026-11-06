@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import GeminiChat from "@/components/GeminiChat";
+import ClayNav from "@/components/ClayNav";
+import ClayBlobs from "@/components/ClayBlobs";
 
 const generateNotes = (startOctave: number, numNotes: number) => {
   const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -102,48 +104,52 @@ export default function PianoGame() {
   }, [handleKeyDown, handleKeyUp]);
 
   return (
-    <div className="min-h-screen font-sans selection:bg-yellow-300 bg-teal-50 flex flex-col" onClick={initAudio}>
-      <nav className="sticky top-0 z-50 bg-white border-b-4 border-black">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black tracking-tighter uppercase hover:underline underline-offset-4 decoration-4">
-            SB.
-          </Link>
-          <div className="flex gap-6 font-bold text-lg">
-            <Link href="/games" className="hover:underline underline-offset-4 decoration-4">Back to Games</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-sans text-slate-700 flex flex-col relative" onClick={initAudio}>
+      <ClayBlobs colors={["bg-teal-300", "bg-rose-300", "bg-violet-300"]} />
+      <ClayNav links={[{ href: "/games", label: "Back to Games" }]} />
 
       <main className="flex-grow max-w-5xl mx-auto px-6 py-12 w-full flex flex-col items-center">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 160, damping: 18 }}
           className="text-center mb-12"
         >
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4 bg-teal-300 px-6 py-3 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -rotate-1 inline-block">
+          <h1 className="clay bg-teal-200 text-teal-900 text-5xl md:text-7xl font-black tracking-tight mb-4 px-8 py-4 -rotate-1 inline-block animate-squish">
             Virtual Piano 🎹
           </h1>
           <br/>
-          <p className="text-xl font-bold bg-white px-4 py-2 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mt-4 inline-block">
+          <p className="clay-sm bg-surface/80 text-xl font-bold px-5 py-2 mt-4 inline-block">
             Click keys or use your keyboard to play!
           </p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative bg-red-500 p-4 pb-6 pt-10 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] rounded-xl max-w-4xl w-full overflow-x-auto"
+          transition={{ type: "spring", stiffness: 160, damping: 18, delay: 0.1 }}
+          className="clay relative bg-rose-300 p-4 pb-6 pt-12 max-w-4xl w-full overflow-x-auto"
         >
+            <div className="absolute top-4 left-6 flex gap-2">
+              {["bg-amber-200", "bg-teal-200", "bg-violet-200"].map((c, i) => (
+                <span
+                  key={c}
+                  className={`w-3 h-3 rounded-full ${c} animate-pulse`}
+                  style={{ animationDelay: `${i * 0.3}s` }}
+                />
+              ))}
+            </div>
             <div className="absolute top-3 right-6 flex gap-3">
-                <div className="w-5 h-5 rounded-full bg-black border-2 border-white shadow-inner"></div>
-                <div className="w-5 h-5 rounded-full bg-black border-2 border-white shadow-inner"></div>
+                <div className="clay-sm rounded-full! w-6 h-6 bg-rose-200"></div>
+                <div className="clay-sm rounded-full! w-6 h-6 bg-rose-200"></div>
             </div>
 
-            <div className="flex relative justify-center min-w-max pb-4 px-2">
-              {KEYS_DATA.filter(k => !k.isBlack).map((whiteKey, idx) => {
+            <div className="clay-inset bg-rose-400/40 rounded-[1.5rem]! flex relative justify-center min-w-max pt-2 pb-4 px-3">
+              {KEYS_DATA.filter(k => !k.isBlack).map((whiteKey) => {
                 const isWhiteActive = activeKeys.includes(whiteKey.note);
                 const blackKey = KEYS_DATA.find(k => k.isBlack && k.parentWhite === whiteKey.note);
-                
+                const isBlackActive = blackKey ? activeKeys.includes(blackKey.note) : false;
+
                 return (
                   <div key={whiteKey.note} className="relative">
                     {/* White Key */}
@@ -167,21 +173,23 @@ export default function PianoGame() {
                       }}
                       onTouchEnd={() => setActiveKeys(prev => prev.filter(k => k !== whiteKey.note))}
                       className={`
-                        w-14 sm:w-20 h-56 sm:h-72 border-x-2 border-b-2 border-black rounded-b-md flex items-end justify-center pb-4 cursor-pointer select-none transition-colors
-                        ${isWhiteActive ? 'bg-gray-300 pt-2' : 'bg-white'}
+                        w-14 sm:w-20 h-56 sm:h-72 rounded-b-2xl rounded-t-md flex items-end justify-center pb-4 cursor-pointer select-none transition-all duration-100
+                        ${isWhiteActive ? 'bg-[#ccfbf1]' : 'bg-white'}
                       `}
                       style={{
                           margin: '0 2px',
-                          boxShadow: isWhiteActive ? 'inset 0 -4px 0 0 rgba(0,0,0,0.2)' : 'inset 0 -12px 0 0 rgba(0,0,0,0.1), 0 4px 0 0 rgba(0,0,0,1)',
-                          transform: isWhiteActive ? 'translateY(4px)' : 'none'
+                          boxShadow: isWhiteActive
+                            ? 'inset 4px 4px 10px rgba(13,148,136,0.25), inset -4px -4px 10px rgba(255,255,255,0.8)'
+                            : '0 8px 12px -4px rgba(136,19,55,0.35), inset -4px -6px 10px rgba(0,0,0,0.08), inset 4px 4px 10px rgba(255,255,255,0.9)',
+                          transform: isWhiteActive ? 'translateY(4px) scale(0.98)' : 'none'
                       }}
                     >
                       <div className="flex flex-col items-center pointer-events-none">
-                        <span className={`text-sm font-bold uppercase mb-1 ${isWhiteActive ? 'text-gray-500' : 'text-gray-400'}`}>{whiteKey.key}</span>
-                        <span className={`font-black ${isWhiteActive ? 'text-black' : 'text-gray-800'}`}>{whiteKey.note}</span>
+                        <span className={`text-sm font-bold uppercase mb-1 ${isWhiteActive ? 'text-[#14b8a6]' : 'text-[#94a3b8]'}`}>{whiteKey.key}</span>
+                        <span className={`font-black ${isWhiteActive ? 'text-[#115e59]' : 'text-[#334155]'}`}>{whiteKey.note}</span>
                       </div>
                     </div>
-                    
+
                     {/* Black Key Overlay */}
                     {blackKey && (
                       <div
@@ -212,15 +220,17 @@ export default function PianoGame() {
                           setActiveKeys(prev => prev.filter(k => k !== blackKey.note));
                         }}
                         className={`
-                          absolute top-0 right-[-14px] sm:right-[-20px] w-8 sm:w-12 h-36 sm:h-44 z-10 border-2 border-black rounded-b-md flex items-end justify-center pb-4 cursor-pointer select-none transition-colors
-                          ${activeKeys.includes(blackKey.note) ? 'bg-gray-800 h-36 sm:h-[170px]' : 'bg-black'}
+                          absolute top-0 right-[-14px] sm:right-[-20px] w-8 sm:w-12 h-36 sm:h-44 z-10 rounded-b-xl flex items-end justify-center pb-4 cursor-pointer select-none transition-all duration-100
+                          ${isBlackActive ? 'bg-violet-500 h-36 sm:h-[170px]' : 'bg-[#334155]'}
                         `}
                         style={{
-                            boxShadow: activeKeys.includes(blackKey.note) ? 'none' : 'inset 0 -8px 0 0 rgba(255,255,255,0.2), 0 4px 0 0 rgba(0,0,0,1)'
+                            boxShadow: isBlackActive
+                              ? 'inset 3px 3px 8px rgba(0,0,0,0.35), inset -3px -3px 8px rgba(255,255,255,0.15)'
+                              : '0 8px 12px -4px rgba(15,23,42,0.5), inset -3px -5px 8px rgba(0,0,0,0.35), inset 3px 3px 8px rgba(255,255,255,0.2)'
                         }}
                       >
                          <div className="flex flex-col items-center pointer-events-none">
-                            <span className="text-xs font-bold text-gray-500 mb-1 uppercase">{blackKey.key}</span>
+                            <span className="text-xs font-bold text-[#94a3b8] mb-1 uppercase">{blackKey.key}</span>
                             <span className="text-xs font-black text-white">{blackKey.note}</span>
                          </div>
                       </div>
