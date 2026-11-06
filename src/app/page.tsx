@@ -17,7 +17,7 @@ import {
   SiTailwindcss,
   SiTypescript,
 } from "react-icons/si";
-import { FaJava, FaGithub, FaLinkedin, FaInstagram, FaLaravel, FaGamepad } from "react-icons/fa";
+import { FaJava, FaGithub, FaLinkedin, FaInstagram, FaLaravel, FaGamepad, FaExternalLinkAlt, FaMobileAlt } from "react-icons/fa";
 import Link from "next/link";
 import GeminiChat from "@/components/GeminiChat";
 import ClayNav from "@/components/ClayNav";
@@ -80,7 +80,42 @@ export default function Home() {
     },
   ];
 
+  const company = {
+    name: "Bryxy",
+    role: "Founder",
+    tagline: "Semua berawal dari sini, titik mula.",
+    desc: "A digital product studio I founded to craft apps that feel close, easy to use, and fun to have around every day — always starting from what users actually need.",
+    website: "https://bryxy-company.vercel.app/",
+    products: [
+      { name: "Doki", kind: "Game", icon: "🃏", color: "bg-amber-200", link: "https://bryxy-company.vercel.app/download#doki" },
+      { name: "Moneyzz", kind: "Lifestyle", icon: "💰", color: "bg-emerald-200", link: "https://bryxy-company.vercel.app/download#moneyzz" },
+    ],
+  };
+
   const projects = [
+    {
+      title: "Doki",
+      badge: "Bryxy",
+      desc: "Multiplatform monster card battle game (TCG) — collect cards, build your deck, and duel other players.",
+      tags: [
+        { name: "Flutter", icon: <SiFlutter /> },
+        { name: "Next.js", icon: <SiNextdotjs /> },
+        { name: "Multiplatform", icon: <FaMobileAlt /> },
+      ],
+      color: "bg-amber-200",
+      link: "https://bryxy-company.vercel.app/download#doki",
+    },
+    {
+      title: "Moneyzz",
+      badge: "Bryxy",
+      desc: "Multiplatform personal finance app — record income & expenses, track cash flow, and scan shopping receipts.",
+      tags: [
+        { name: "Flutter", icon: <SiFlutter /> },
+        { name: "Multiplatform", icon: <FaMobileAlt /> },
+      ],
+      color: "bg-emerald-200",
+      link: "https://bryxy-company.vercel.app/download#moneyzz",
+    },
     {
       title: "Division Monitoring Dashboard",
       desc: "Web-based dashboard for monitoring and managing tasks across every company division.",
@@ -180,6 +215,7 @@ export default function Home() {
       <ClayNav
         collapseOnMobile
         links={[
+          { href: "#company", label: "Company" },
           { href: "#experience", label: "Experience" },
           { href: "#projects", label: "Projects" },
           { href: "#skills", label: "Skills" },
@@ -243,6 +279,79 @@ export default function Home() {
           </p>
         </motion.section>
 
+        {/* Company Section */}
+        <section id="company" className="scroll-mt-28 break-inside-avoid">
+          <SectionTitle color="bg-violet-200">My Company</SectionTitle>
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-60px" }}
+            className="clay bg-violet-200 p-7 md:p-10 relative overflow-hidden"
+          >
+            {/* Decorative floating shapes */}
+            <div className="absolute -top-6 -right-6 w-28 h-28 bg-pink-200 clay rounded-full! animate-float-slow print:hidden" />
+            <div
+              className="absolute bottom-6 right-1/3 w-10 h-10 bg-amber-200 clay rounded-full! animate-float print:hidden"
+              style={{ animationDelay: "-2s" }}
+            />
+
+            <div className="relative flex flex-col md:flex-row gap-8 md:items-center">
+              <motion.div
+                whileHover={{ rotate: -8, scale: 1.08 }}
+                className="clay bg-surface w-28 h-28 md:w-36 md:h-36 shrink-0 flex items-center justify-center animate-squish"
+              >
+                <span className="text-4xl md:text-5xl font-black tracking-tight text-violet-600">
+                  bryxy<span className="text-pink-400">.</span>
+                </span>
+              </motion.div>
+
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-3 mb-3">
+                  <h3 className="text-4xl font-black text-slate-800">{company.name}</h3>
+                  <span className="clay-sm rounded-full! bg-surface px-3 py-1 text-xs font-black uppercase text-violet-700">
+                    {company.role}
+                  </span>
+                </div>
+                <p className="text-xl font-extrabold italic text-violet-800 mb-4">
+                  &ldquo;{company.tagline}&rdquo;
+                </p>
+                <p className="clay-inset bg-surface/50 text-base font-semibold p-4 mb-6">
+                  {company.desc}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  {company.products.map((p, i) => (
+                    <motion.a
+                      key={p.name}
+                      href={p.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.2 + i * 0.1 }}
+                      className={`clay-btn ${p.color} px-4 py-2 flex items-center gap-2 font-extrabold text-slate-800`}
+                    >
+                      <span className="text-xl">{p.icon}</span>
+                      {p.name}
+                      <span className="text-xs font-bold text-slate-500">· {p.kind}</span>
+                    </motion.a>
+                  ))}
+                  <a
+                    href={company.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="clay-btn bg-violet-500 text-white px-5 py-2 font-extrabold flex items-center gap-2"
+                  >
+                    Visit Website <FaExternalLinkAlt className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
         {/* Experience Section */}
         <section id="experience" className="scroll-mt-28 print:break-before-page">
           <SectionTitle color="bg-emerald-200">Experience</SectionTitle>
@@ -304,11 +413,24 @@ export default function Home() {
                 className={`clay ${project.color} p-6 flex flex-col h-full break-inside-avoid`}
               >
                 <div className="flex justify-between items-start mb-4 gap-4">
-                  <h3 className="text-2xl font-black text-slate-800">{project.title}</h3>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800">{project.title}</h3>
+                    {"badge" in project && project.badge && (
+                      <span className="clay-sm rounded-full! bg-violet-300 text-violet-900 inline-block mt-2 px-2.5 py-0.5 text-xs font-black">
+                        by {project.badge}
+                      </span>
+                    )}
+                  </div>
                   {project.link ? (
-                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="clay-btn bg-surface p-2.5 shrink-0" aria-label="View on GitHub">
-                      <FaGithub className="w-5 h-5" />
-                    </a>
+                    project.link.includes("github.com") ? (
+                      <a href={project.link} target="_blank" rel="noopener noreferrer" className="clay-btn bg-surface p-2.5 shrink-0" aria-label="View on GitHub">
+                        <FaGithub className="w-5 h-5" />
+                      </a>
+                    ) : (
+                      <a href={project.link} target="_blank" rel="noopener noreferrer" className="clay-btn bg-surface p-2.5 shrink-0" aria-label={`Download ${project.title}`}>
+                        <FaExternalLinkAlt className="w-4 h-4" />
+                      </a>
+                    )
                   ) : (
                     <span className="clay-inset rounded-full! bg-surface/50 px-3 py-1 text-xs font-bold text-slate-500 cursor-not-allowed shrink-0" title="Restricted Company Project">
                       🔒 Private
@@ -368,7 +490,7 @@ export default function Home() {
         </div>
       </footer>
       <GeminiChat
-        pageContext="Ini adalah halaman portofolio Bryant (Bryxy), seorang IT Developer & Fullstack/Mobile Developer dari Indonesia. Saat ini bekerja sebagai IT Developer di Kemenangan Masindo Group (sedang mengembangkan dashboard web monitoring pekerjaan antar divisi menggunakan Next.js, Nest.js, Supabase, dan Tailwind CSS). Juga berpengalaman di Kotlin, Android, React, Laravel, Figma. Bantu pengunjung mengenal Bryant lebih jauh."
+        pageContext="Ini adalah halaman portofolio Bryant (Bryxy), seorang IT Developer & Fullstack/Mobile Developer dari Indonesia. Saat ini bekerja sebagai IT Developer di Kemenangan Masindo Group (sedang mengembangkan dashboard web monitoring pekerjaan antar divisi menggunakan Next.js, Nest.js, Supabase, dan Tailwind CSS). Bryant juga founder Bryxy (https://bryxy-company.vercel.app/), studio produk digital dengan tagline 'Semua berawal dari sini, titik mula.' Produk Bryxy: Doki (game battle kartu monster/TCG multiplatform, dibuat dengan Flutter dan Next.js) dan Moneyzz (aplikasi pengatur keuangan multiplatform untuk mencatat pemasukan & pengeluaran, memantau arus kas, dan scan struk belanja, dibuat dengan Flutter). Juga berpengalaman di Kotlin, Android, React, Laravel, Figma. Bantu pengunjung mengenal Bryant lebih jauh."
       />
     </div>
   );
